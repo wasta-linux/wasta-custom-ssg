@@ -1,0 +1,114 @@
+c Didinga Keyboard
+
+NAME "Didinga"
+
+BITMAP "DID.bmp"
+
+VERSION 6.0
+
+store(&MnemonicLayout) "1"        c This keyboard uses a mnemonic layout.
+
+begin UNICODE > use(Main)
+
+group(main) using keys
+
+c punctuation
+"<" + "'" > U+2018
+">" + "'" > U+2019
+'<' + '"' > U+201C
+'>' + '"' > U+201D
+'-' + '-' > U+2013
+'~' + '~' > U+2013
+'@' + 'c' > U+00A9
+'@' + 'C' > U+00A9
+
+c maths signs
+'+' + '-' > U+00B1
+"+" + "+" > U+00D7
+'-' + ';' > U+00F7
+'-' + ':' > U+00F7
+'_' + ':' > U+00F7
+'^' + '.' > U+2022
+
+c powers
+'^' + '0' > U+2070
+'^' + '1' > U+00B9
+'^' + '2' > U+00B2
+'^' + '3' > U+00B3
+
+c fractions
+';' + '1' > U+00BC
+';' + '2' > U+00BD
+';' + '3' > U+00BE
+';' + '8' > U+215B
+
+c miscellaneous
++ "'" > U+A78C
+';' + 'n' > U+014B
+':' + 'n' > U+014B
+';' + 'N' > U+014A
+':' + 'N' > U+014A
+
+c LowerCase Special Characters
+U+A78C + 'a' > U+00E1
+U+A78C + 'e' > U+00E9
+U+A78C + 'i' > U+00ED
+U+A78C + 'o' > U+00F3
+U+A78C + 'u' > U+00FA
+';' + 'e' > U+1EBD
+';' + 'i' > U+0129
+';' + 'o' > U+00F5
+';' + 'u' > U+0169
+'[' + 'e' > U+1EBD
+'[' + 'i' > U+0129
+'[' + 'o' > U+00F5
+'[' + 'u' > U+0169
+U+A78C ';' + 'e' > U+1EBD U+0301
+U+A78C ';' + 'i' > U+0129 U+0301
+U+A78C ';' + 'o' > U+1E4D
+U+A78C ';' + 'u' > U+1E79
+U+A78C '[' + 'e' > U+1EBD U+0301
+U+A78C '[' + 'i' > U+0129 U+0301
+U+A78C '[' + 'o' > U+1E4D
+U+A78C '[' + 'u' > U+1E79
+
+
+c UpperCase Special Characters
+
+U+A78C + 'A' > U+00C1
+U+A78C + 'E' > U+00C9
+U+A78C + 'I' > U+00CD
+U+A78C + 'O' > U+00D3
+U+A78C + 'U' > U+00DA
+';' + 'E' > U+1EBC
+';' + 'I' > U+0128
+';' + 'O' > U+00D5
+';' + 'U' > U+0168
+':' + 'E' > U+1EBC
+':' + 'I' > U+0128
+':' + 'O' > U+00D5
+':' + 'U' > U+0168
+'[' + 'E' > U+1EBC
+'[' + 'I' > U+0128
+'[' + 'O' > U+00D5
+'[' + 'U' > U+0168
+'{' + 'E' > U+1EBC
+'{' + 'I' > U+0128
+'{' + 'O' > U+00D5
+'{' + 'U' > U+0168
+U+A78C ';' + 'E' > U+1EBC U+0301
+U+A78C ';' + 'I' > U+0128 U+0301
+U+A78C ';' + 'O' > U+1E4C
+U+A78C ';' + 'U' > U+1E78
+U+A78C ':' + 'E' > U+1EBC U+0301
+U+A78C ':' + 'I' > U+0128 U+0301
+U+A78C ':' + 'O' > U+1E4C
+U+A78C ':' + 'U' > U+1E78
+U+A78C '[' + 'E' > U+1EBC U+0301
+U+A78C '[' + 'I' > U+0128 U+0301
+U+A78C '[' + 'O' > U+1E4C
+U+A78C '[' + 'U' > U+1E78
+U+A78C '{' + 'E' > U+1EBC U+0301
+U+A78C '{' + 'I' > U+0128 U+0301
+U+A78C '{' + 'O' > U+1E4C
+U+A78C '{' + 'U' > U+1E78

@@ -1,0 +1,82 @@
+c Keyman keying table
+
+NAME "Baka"
+
+BITMAP "BDH.bmp"
+VERSION 6.0
+
+store(&mnemoniclayout) "1"
+
+begin UNICODE > use(main)
+
+begin > use(Main)
+
+group(Main) using keys
+
+c underdots, barred I, saltillo
+                          
+"/" + "i" > U+1ECB
+"/" + "I" > U+1ECA
+"/" + "n" > U+1E47
+"/" + "N" > U+1E46
+"/" + "r" > U+1E5B
+"/" + "R" > U+1E5A
+"/" + "u" > U+1EE5
+"/" + "U" > U+1EE4
+"/" + "v" > U+1E7F
+"/" + "V" > U+1E7E
+"/" + "x" > U+0268
+"/" + "X" > U+0197
+"/" + "?" > U+A78C
+
+c underdots and barred i, high tone
+
+";" + "i" > U+1ECB U+0301
+";" + "I" > U+1ECA U+0301
+";" + "u" > U+1EE5 U+0301
+";" + "U" > U+1EE4 U+0301
+";" + "x" > U+0268 U+0301
+";" + "X" > U+0197 U+0301
+
+c high tone    
+
+"'" + "a" > U+00E1
+"'" + "e" > U+00E9
+"'" + "i" > U+00ED
+"'" + "o" > U+00F3
+"'" + "u" > U+00FA
+"'" + "x" > U+0268 U+0301
+"'" + "A" > U+00C1
+"'" + "E" > U+00C9
+"'" + "I" > U+00CD
+"'" + "O" > U+00D3
+"'" + "U" > U+00DA
+"'" + "X" > U+0197 U+0301
+
+c apostrophe characters
+                          
+"'" + "b" > U+A78C U+0062
+"'" + "B" > U+A78C U+0042
+"'" + "d" > U+A78C U+0064
+"'" + "D" > U+A78C U+0044
+"'" + "y" > U+A78C U+0079
+"'" + "Y" > U+A78C U+0059
+
+"?" + ";" > U+00A0 c hard space used for attaching the plural suffix
+"/" + ";" > U+00A0 c hard space used for attaching the plural suffix
+
+";" + "<" > U+201C c opening double quotes
+";" + "," > U+201C c opening double quotes
+";" + ">" > U+201D c closing double quotes
+";" + "." > U+201D c closing double quotes
+
+"'" + "<" > U+2018 c opening single quotes
+"'" + "," > U+2018 c opening single quotes
+"'" + ">" > U+2019 c closing single quotes
+"'" + "." > U+2019 c closing single quotes
+
+c Another possibility, like KRT
+"<" + "'" > U+2018
+">" + "'" > U+2019
+'<' + '"' > U+201C
+'>' + '"' > U+201D

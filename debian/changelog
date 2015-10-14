@@ -1,0 +1,143 @@
+wasta-custom-ssg (1.0.0) precise; urgency=medium
+
+  * Initial GitHub / Launchpad commit
+
+ -- Rik Shaw <rikshaw76@gmail.com>  Wed, 14 Oct 2015 16:24:08 +0300
+
+wasta-custom-ssg (0.1.20) precise; urgency=low
+
+  * postinst: Disable Graphite in LO desktop launchers.  With Graphite
+    enabled, spacing of SIL fonts for bold / normal not behaving correctly.
+    First used instance of font (even from different open document) will
+    define if bold or normal spacing used, regardless of whether actual
+    bold or normal characters are entered.  Disabling Graphite corrects
+    this problem.
+
+ -- Rik Shaw <rikshaw76@gmail.com>  Mon, 09 Feb 2015 16:14:58 +0300
+
+wasta-custom-ssg (0.1.19) precise; urgency=low
+
+  * version bump so able to trigger updates for ECSTD machines
+
+ -- Rik Shaw <rikshaw76@gmail.com>  Fri, 30 Jan 2015 14:26:48 +0300
+
+wasta-custom-ssg (0.1.18) precise; urgency=medium
+
+  * postinst: replacing "=" with "==" for comparison
+
+ -- Rik Shaw <rikshaw76@gmail.com>  Mon, 26 Jan 2015 15:04:18 +0300
+
+wasta-custom-ssg (0.1.17) precise; urgency=medium
+
+  * postinst: logname not available to apt-get, so now resetting LO settings
+    based on for loop with wildcard matching
+
+ -- Rik Shaw <rikshaw76@gmail.com>  Mon, 26 Jan 2015 14:58:30 +0300
+
+wasta-custom-ssg (0.1.16) precise; urgency=medium
+
+  * postinst: reset LO settings for all users if older than 2015-01-26.
+    This will ensure that ODF default settings are used.
+
+ -- Rik Shaw <rikshaw76@gmail.com>  Mon, 26 Jan 2015 13:42:26 +0300
+
+wasta-custom-ssg (0.1.15) precise; urgency=medium
+
+  * Changing LO extension to "SSG ODF" version
+
+ -- Rik Shaw <rikshaw76@gmail.com>  Mon, 26 Jan 2015 11:23:59 +0300
+
+wasta-custom-ssg (0.1.14) precise; urgency=low
+
+  * Added wasta-resources-ssg dependency
+  * Added kmfl-keyboard-ipa dependency
+  * Added postrm to remove /usr/bin/ssg-kmfl-setup symlink on uninstall 
+
+ -- Rik Shaw <rikshaw76@gmail.com>  Fri, 09 May 2014 12:06:11 -0500
+
+wasta-custom-ssg (0.1.13) precise; urgency=low
+
+  * LibreOffice adjustments: clearing out registrymodifications.xcu hacks,
+    including wasta-ssg-defaults.oxt extension.
+
+ -- Rik Shaw <rikshaw76@gmail.com>  Thu, 20 Feb 2014 09:43:21 -0600
+
+wasta-custom-ssg (0.1.12) precise; urgency=low
+
+  * Added xmlstarlet dependency
+  * libreoffice/lo-set-ssg-defaults: fixed user profile backup syntax.
+
+ -- Rik Shaw <rikshaw76@gmail.com>  Wed, 29 Jan 2014 12:16:31 -0600
+
+wasta-custom-ssg (0.1.11) precise; urgency=low
+
+  * wasta-custom-ssg-postinst: typo referencing png instead of ssg.
+
+ -- Rik Shaw <rikshaw76@gmail.com>  Wed, 29 Jan 2014 09:30:06 -0600
+
+wasta-custom-ssg (0.1.10) precise; urgency=low
+
+  * lo registrymodifications.xcu: fixing since can't rename during install
+
+ -- Rik Shaw <rikshaw76@gmail.com>  Mon, 27 Jan 2014 15:17:50 -0600
+
+wasta-custom-ssg (0.1.9) precise; urgency=low
+
+  * wasta-custom-ssg-postinst: fixed references to LO scripts
+
+ -- Rik Shaw <rikshaw76@gmail.com>  Tue, 21 Jan 2014 18:51:22 -0600
+
+wasta-custom-ssg (0.1.8) precise; urgency=low
+
+  * Fixed LO settings file name for install
+
+ -- Rik Shaw <rikshaw76@gmail.com>  Mon, 20 Jan 2014 14:57:03 -0600
+
+wasta-custom-ssg (0.1.7) precise; urgency=low
+
+  * Re-work LO settings fixes
+
+ -- Rik Shaw <rikshaw76@gmail.com>  Mon, 20 Jan 2014 14:46:16 -0600
+
+wasta-custom-ssg (0.1.6) precise; urgency=low
+
+  * Once again on chown syntax in postinst
+
+ -- Rik Shaw <rikshaw76@gmail.com>  Wed, 23 Oct 2013 16:50:02 -0500
+
+wasta-custom-ssg (0.1.5) precise; urgency=low
+
+  * Fixing chown syntax in postinst
+
+ -- Rik Shaw <rikshaw76@gmail.com>  Mon, 21 Oct 2013 20:05:10 -0500
+
+wasta-custom-ssg (0.1.4) precise; urgency=low
+
+  * Once again: another postinst syntax error referencing file
+
+ -- Rik Shaw <rikshaw76@gmail.com>  Mon, 21 Oct 2013 19:32:32 -0500
+
+wasta-custom-ssg (0.1.3) precise; urgency=low
+
+  * Fixed syntax error in postinst referencing file location
+
+ -- Rik Shaw <rikshaw76@gmail.com>  Mon, 21 Oct 2013 17:48:24 -0500
+
+wasta-custom-ssg (0.1.2) precise; urgency=low
+
+  * LO settings reset logic OR logic syntax fix (need || not |)
+
+ -- Rik Shaw <rikshaw76@gmail.com>  Mon, 21 Oct 2013 15:43:06 -0500
+
+wasta-custom-ssg (0.1.1) precise; urgency=low
+
+  * Corrected ssg-kmfl-setup keyboard list generation
+  * Added LO settings reset logic to postinst script
+
+ -- Rik Shaw <rikshaw76@gmail.com>  Mon, 21 Oct 2013 14:54:34 -0500
+
+wasta-custom-ssg (0.1) precise; urgency=low
+
+  * Initial Release.
+
+ -- Rik Shaw <rikshaw76@gmail.com>  Mon, 21 Oct 2013 13:01:36 -0500

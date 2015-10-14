@@ -1,0 +1,118 @@
+﻿c Viri VIR Keyboard
+
+NAME "Viri"
+BITMAP "BVI.bmp"
+VERSION 6.0
+
+store(&MnemonicLayout) "1"
+
+begin UNICODE > use(main)
+
+group(main) using keys
+
+c punctuation
+"<" + "'" > U+2018
+">" + "'" > U+2019
+'<' + '"' > U+201C
+'>' + '"' > U+201D
+'-' + '-' > U+2013
+'~' + '~' > U+2013
+U+2013 '~' + '~' > U+2014
+U+2013 '-' + '-' > U+2014 
+'@' + 'c' > U+00A9
+'@' + 'C' > U+00A9
+";" + "'" > U+A78C  
+
+c deadkeys
++ "/" > dk(1)
+dk(1) + "/" > U+002F
++ "'" > dk(2)
+dk(2) + "'" > U+A78C
+
+c backslash
+"@" + "\" > U+005C
+
+c maths signs
+'+' + '-' > U+00B1
+'~' + '"' > U+00B1
+"+" + "+" > U+00D7
+'~' + "'" > U+00D7
+'-' + ';' > U+00F7
+'-' + ':' > U+00F7
+'~' + ';' > U+00D7
+'~' + ':' > U+00F7
+'_' + ':' > U+00F7
+'^' + '.' > U+2022
+
+c powers
+'^' + '0' > U+2070
+'^' + '1' > U+00B9
+'^' + '2' > U+00B2
+'^' + '3' > U+00B3
+
+c fractions
+';' + '1' > U+00BC
+';' + '2' > U+00BD
+';' + '3' > U+00BE
+';' + '8' > U+215B
+
+c isolated tone marks
+'^' + '^' > U+02C6 
+'^' + '`' > U+0060
+'^' + ':' > U+00A8
+'^' + ';' > U+00A8
+'^' + '~' > U+02DC
+'^' + "'" > U+00B4
+'^' + '%' > U+02C7
+'_' + ' ' > U+00A0 U+0331
+'^' + 'v' > U+02D8    
+
+c double stacked diacritics
+c I am aware that ;'i and ;'I could go to 1E2F and 1E2E respectively, but don't think this is wise
+c I am aware that ;'i and ;'I could go to 1E2F and 1E2E respectively, but don't think this is wise
+c BC 2010-1-19
+  U+A78C + any(plainvowels) > index(umlotvowels, 2) U+0301
+  ";" "[" + any(plainvowels) > index(umlotvowels, 3) U+0303
+  ";" "~" + any(plainvowels) > index(umlotvowels, 3) U+0303
+  
+c letters
+ store(plainvowels) "aeiouAEIOU"
+ store(acutevowels) U+00E1 U+00E9 U+00ED U+00F3 U+00FA U+00C1 U+00C9 U+00CD U+00D3 U+00DA
+ store(gravevowels) U+00E0 U+00E8 U+00EC U+00F2 U+00F9 U+00C0 U+00C8 U+00CC U+00D2 U+00D9
+ store(umlotvowels) U+00E4 U+00EB U+00EF U+00F6 U+00FC U+00C4 U+00CB U+00CF U+00D6 U+00DC
+ store(tildavowels) U+00E3 U+1EBD U+0129 U+00F5 U+0169 U+00C3 U+1EBC U+0128 U+00D5 U+0168
+     
+c accents on vowels
+dk(2) + any(plainvowels) > index(acutevowels, 2)
+  ":" + any(plainvowels) > index(umlotvowels, 2)
+  ";" + any(plainvowels) > index(umlotvowels, 2)
+  "`" + any(plainvowels) > index(gravevowels, 2)
+  "{" + any(plainvowels) > index(tildavowels, 2)
+  "[" + any(plainvowels) > index(tildavowels, 2)
+  "~" + any(plainvowels) > index(tildavowels, 2)
+  
+c the ng
+";" + "n" > U+014B 
+":" + "n" > U+014B 
++ "q" > U+014B 
+";" + "N" > U+014A                   
+":" + "N" > U+014A 
++ "Q" > U+014A
+
+c writing lines
+'>' + '-' > U+E005
+'>' + '_' > U+E005
+'>' + '=' > U+E006
+'>' + '~' > U+E007
+'>' + '+' > U+E008
+'<' + '-' > U+E001
+'<' + '_' > U+E001
+'<' + '=' > U+E002
+'<' + '~' > U+E003
+'<' + '+' > U+E004
+
+c joining lines
+";" + '"' > U+E000
+
+c narrow space
+dk(1) + " " > U+2009

@@ -1,0 +1,12 @@
+Source: wasta-custom-ssg
+Section: utils
+Priority: extra
+Maintainer: Rik Shaw <rikshaw76@gmail.com>
+Build-Depends: debhelper (>= 8.0.0)
+Standards-Version: 3.9.5
+
+Package: wasta-custom-ssg
+Architecture: any
+Depends: ibus-kmfl, kmfl-keyboard-ipa, wasta-base-setup, wasta-resources-ssg, xmlstarlet, ${shlibs:Depends}, ${misc:Depends}
+Description: Wasta-Linux SSG customization
+ Sets up machine for Wasta-Linux SSG use.

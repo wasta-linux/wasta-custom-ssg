@@ -1,0 +1,173 @@
+﻿c Mitto Keyboard
+
+NAME "MIT"
+BITMAP "MIT.bmp"
+VERSION 6.0
+
+store(&MnemonicLayout) "1"        c This keyboard uses a mnemonic layout.
+
+begin UNICODE > use(main)
+
+group(main) using keys
+
+c punctuation
+"<" + "'" > U+2018
+">" + "'" > U+2019
+'<' + '"' > U+201C
+'>' + '"' > U+201D
+'~' + '~' > U+2013
+U+2013 '~' + '~' > U+2014
+'@' + 'c' > U+00A9
+'@' + 'C' > U+00A9
+";" + "'" > U+A78C
+"'" + "'" > U+A78C
+
+c maths signs
+';' + '=' > "="
+':' + '=' > "="
+':' + '+' > "+"
+';' + '+' > "+"
+'~' + '"' > U+00B1
+'~' + "'" > U+00D7
+'~' + ';' > U+00D7
+'~' + ':' > U+00F7
+c '_' + ':' > U+00F7
+'^' + '.' > U+2022
+';' + '-' > U+002D
+':' + '-' > U+002D
+';' + '_' > U+005F
+':' + '_' > U+005F
+
+c powers
+'^' + '0' > U+2070
+'^' + '1' > U+00B9
+'^' + '2' > U+00B2
+'^' + '3' > U+00B3
+
+c fractions
+';' + '1' > U+00BC
+';' + '2' > U+00BD
+';' + '3' > U+00BE
+';' + '8' > U+215B
+
+c isolated tone marks
+'^' + '_' > U+005F
+'^' + '^' > U+02C6 
+'^' + ']' > U+02C6
+'^' + '[' > U+02C7
+'^' + '%' > U+02C7
+'^' + '`' > U+0060
+'^' + '~' > U+02DC
+'^' + "'" > U+00B4
+
+c letters
+store(plainvowels)"aeiouAEIOU"
+store(acutevowels) U+00E1 U+00E9 U+00ED U+00F3 U+00FA U+00C1 U+00C9 U+00CD U+00D3 U+00DA
+store(gravevowels) U+00E0 U+00E8 U+00EC U+00F2 U+00F9 U+00C0 U+00C8 U+00CC U+00D2 U+00D9
+store(carrtvowels) U+00E2 U+00EA U+00EE U+00F4 U+00FB U+00C2 U+00CA U+00CE U+00D4 U+00DB
+store(hacheckvowe) U+01CE U+011B U+01D0 U+01D2 U+01D4 U+01CD U+011A U+01CF U+01D1 U+01D3 
+
+"'" + any(plainvowels) > index(acutevowels, 2)
+"`" + any(plainvowels) > index(gravevowels, 2)
+"}" + any(plainvowels) > index(carrtvowels, 2)
+"]" + any(plainvowels) > index(carrtvowels, 2)
+"^" + any(plainvowels) > index(carrtvowels, 2)
+"{" + any(plainvowels) > index(hacheckvowe, 2)
+"[" + any(plainvowels) > index(hacheckvowe, 2)  
+"%" + any(plainvowels) > index(hacheckvowe, 2)
+c "_" + any(plainvowels) > index(plainvowels, 2) U+0331
+
+c underlined a
++ "=" > "a" U+0331
+"'" + "=" > "a" U+0331 U+0301
+":" + "=" > "a" U+0331 U+0308
+";" + "=" > "a" U+0331 U+0308
+"`" + "=" > "a" U+0331 U+0300
+"}" + "=" > "a" U+0331 U+0302
+"]" + "=" > "a" U+0331 U+0302
+"^" + "=" > "a" U+0331 U+0302
+"{" + "=" > "a" U+0331 U+030C
+"[" + "=" > "a" U+0331 U+030C
+"%" + "=" > "a" U+0331 U+030C
++ "+" > "A" U+0331
+"'" + "+" > "A" U+0331 U+0301
+":" + "+" > "A" U+0331 U+0308
+";" + "+" > "A" U+0331 U+0308
+"`" + "+" > "A" U+0331 U+0300
+"}" + "+" > "A" U+0331 U+0302
+"]" + "+" > "A" U+0331 U+0302
+"^" + "+" > "A" U+0331 U+0302
+"{" + "+" > "A" U+0331 U+030C
+"[" + "+" > "A" U+0331 U+030C
+"%" + "+" > "A" U+0331 U+030C
+
+C barred i
++ "-" > U+0268
+"'" + "-" > U+0268 U+0301
+":" + "-" > U+0268 U+0308 
+";" + "-" > U+0268 U+0308
+"`" + "-" > U+0268 U+0300
+"}" + "-" > U+0268 U+0302 
+"^" + "-" > U+0268 U+0302
+"]" + "-" > U+0268 U+0302
+"{" + "-" > U+0268 U+030C 
+"[" + "-" > U+0268 U+030C
+"%" + "-" > U+0268 U+030C
++ "_" > U+0197
+"'" + "_" > U+0197 U+0301 
+":" + "_" > U+0197 U+0308 
+";" + "_" > U+0197 U+0308
+"`" + "_" > U+0197 U+0300
+"}" + "_" > U+0197 U+0302 
+"]" + "_" > U+0197 U+0302
+"{" + "_" > U+0197 U+030C 
+"[" + "_" > U+0197 U+030C
+"%" + "_" > U+0197 U+030C
+
+c  barred u
++ "\" > U+0289
+  "'" + "\" > U+0289 U+0301 
+  "`" + "\" > U+0289 U+0300
+  ":" + "\" > U+0289 U+0308
+  ";" + "\" > U+0289 U+0308
+  "}" + "\" > U+0289 U+0302 
+  "]" + "\" > U+0289 U+0302
+  "^" + "\" > U+0289 U+0302
+  "{" + "\" > U+0289 U+030C 
+  "[" + "\" > U+0289 U+030C
+  "%" + "\" > U+0289 U+030C
++ "|" > U+0244
+  "'" + "|" > U+0244 U+0301
+  "`" + "|" > U+0244 U+0300  
+  ":" + "|" > U+0244 U+0308
+  ";" + "|" > U+0244 U+0308
+  "}" + "|" > U+0244 U+0302 
+  "]" + "|" > U+0244 U+0302
+  "^" + "|" > U+0244 U+0302
+  "{" + "|" > U+0244 U+030C 
+  "[" + "|" > U+0244 U+030C
+  "%" + "|" > U+0244 U+030C
+
+c the ng
+";" + "n" > U+014B 
+";" + "N" > U+014A
+":" + "n" > U+014B 
+":" + "N" > U+014A
+
+c  writing lines
+'>' + '-' > U+E005
+'>' + '_' > U+E005
+'>' + '=' > U+E006
+'>' + '~' > U+E007
+'>' + '+' > U+E008
+'<' + '-' > U+E001
+'<' + '_' > U+E001
+'<' + '=' > U+E002
+'<' + '~' > U+E003
+'<' + '+' > U+E004
+
+c  joining lines
+";" + '"' > U+E000
+
+c narrow space
+"/" + " " > U+2009

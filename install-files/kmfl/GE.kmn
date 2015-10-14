@@ -1,0 +1,499 @@
+c General SWP Keyboard (UA+MV)
+
+NAME "General"
+
+BITMAP "GE.bmp"
+
+VERSION 6.0
+
+store(&MnemonicLayout) "1"        c This keyboard uses a mnemonic layout.
+
+begin UNICODE > use(Main)
+
+group(Main) using keys
+
+c punctuation
+"<" + "'" > U+2018
+">" + "'" > U+2019
+'<' + '"' > U+201C
+'>' + '"' > U+201D
+'-' + '-' > U+2013
+'~' + '~' > U+2013
+U+2013 '~' + '~' > U+2014
+U+2013 '-' + '-' > U+2014 
+'@' + 'c' > U+00A9
+'@' + 'C' > U+00A9
+";" + "'" > U+A78C
+
+c deadkeys
++ "/" > dk(1)
+dk(1) + "/" > U+002F
++ "'" > dk(2)
+dk(2) + "'" > U+A78C
+
+c backslash
+"@" + "\" > U+005C
+
+c maths signs
+'+' + '-' > U+00B1
+'~' + '"' > U+00B1
+"+" + "+" > U+00D7
+'~' + "'" > U+00D7
+'-' + ';' > U+00F7
+'-' + ':' > U+00F7
+'~' + ';' > U+00D7
+'~' + ':' > U+00F7
+'_' + ':' > U+00F7
+'^' + '.' > U+2022
+
+c powers
+'^' + '0' > U+2070
+'^' + '1' > U+00B9
+'^' + '2' > U+00B2
+'^' + '3' > U+00B3
+
+c fractions
+';' + '1' > U+00BC
+';' + '2' > U+00BD
+';' + '3' > U+00BE
+';' + '8' > U+215B
+
+c isolated tone marks
+'^' + '^' > U+02C6 
+'^' + '`' > U+0060
+'^' + ':' > U+00A8
+'^' + ';' > U+00A8
+'^' + '~' > U+02DC
+'^' + "'" > U+00B4
+'^' + '%' > U+02C7
+'_' + ' ' > U+00A0 U+0331
+'^' + 'v' > U+02D8
+
+c letters
+ store(plainvowels) "aeiouAEIOU"
+ store(plainletter) "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+    store(invowels) "=[-]\+{_}|"
+   store(outvowels) U+01DD U+025B U+0268 U+0254 U+0289 U+018E U+0190 U+0197 U+0186 U+0244
+ store(acutevowels) U+00E1 U+00E9 U+00ED U+00F3 U+00FA U+00C1 U+00C9 U+00CD U+00D3 U+00DA
+ store(gravevowels) U+00E0 U+00E8 U+00EC U+00F2 U+00F9 U+00C0 U+00C8 U+00CC U+00D2 U+00D9
+ store(umlotvowels) U+00E4 U+00EB U+00EF U+00F6 U+00FC U+00C4 U+00CB U+00CF U+00D6 U+00DC
+ store(tildavowels) U+00E3 U+1EBD U+0129 U+00F5 U+0169 U+00C3 U+1EBC U+0128 U+00D5 U+0168
+ store(carrtvowels) U+00E2 U+00EA U+00EE U+00F4 U+00FB U+00C2 U+00CA U+00CE U+00D4 U+00DB
+ store(hacheckvowe) U+01CE U+011B U+01D0 U+01D2 U+01D4 U+01CD U+011A U+01CF U+01D1 U+01D3
+ store(undotvowels) U+1EA1 U+1EB9 U+1ECB U+1ECD U+1EE5 U+1EA0 U+1EB8 U+1ECA U+1ECC U+1EE4
+ store(brevevowels) U+0103 U+0115 U+012D U+014F U+016D U+0102 U+0114 U+012C U+014E U+016C
+ store(macrnvowels) U+0101 U+0113 U+012B U+014D U+016B U+0100 U+0112 U+012A U+014C U+016A
+
+c accents on vowels
+dk(2) + any(plainvowels) > index(acutevowels, 2)
+  ":" + any(plainvowels) > index(umlotvowels, 2)
+  ";" + any(plainvowels) > index(umlotvowels, 2)
+  "`" + any(plainvowels) > index(gravevowels, 2)
+  "}" + any(plainvowels) > index(carrtvowels, 2)
+  "]" + any(plainvowels) > index(carrtvowels, 2)
+  "^" + any(plainvowels) > index(carrtvowels, 2)
+  "{" + any(plainvowels) > index(tildavowels, 2)
+  "[" + any(plainvowels) > index(tildavowels, 2)
+  "~" + any(plainvowels) > index(tildavowels, 2)
+  "%" + any(plainvowels) > index(hacheckvowe, 2)
+  "." + any(plainvowels) > index(undotvowels, 2)
+  ";" "v" + any(plainvowels) > index(brevevowels, 3)
+  ";" "~" + any(plainvowels) > index(macrnvowels, 3)
+  ";" "`" + any(plainvowels) > index(macrnvowels, 3)
+
+c underdot letters (vowels above)
+"." + "b" > U+1E05
+"." + "B" > U+1E04
+"." + "c" > "c" U+0323
+"." + "C" > "C" U+0323
+"." + "d" > U+1E0D
+"." + "D" > U+1E0C
+">" + "d" > U+1E0D
+">" + "D" > U+1E0C
+"." + "f" > "f" U+0323
+"." + "F" > "F" U+0323
+"." + "g" > "g" U+0323
+"." + "G" > "G" U+0323
+"." + "h" > U+1E25
+"." + "H" > U+1E24
+"." + "j" > "j" U+0323
+"." + "J" > "J" U+0323
+"." + "k" > U+1E33
+"." + "K" > U+1E32
+"." + "l" > U+1E37
+"." + "L" > U+1E36
+"." + "m" > U+1E43
+"." + "M" > U+1E42
+"." + "n" > U+1E47
+"." + "N" > U+1E46
+"." + "p" > "p" U+0323
+"." + "P" > "P" U+0323
+"." + "q" > "q" U+0323
+"." + "Q" > "Q" U+0323
+"." + "r" > U+1E5B
+"." + "R" > U+1E5A
+";" + "r" > U+1E5B
+";" + "R" > U+1E5A
+":" + "r" > U+1E5B
+":" + "R" > U+1E5A
+">" + "r" > U+1E5B
+">" + "R" > U+1E5A
+"." + "s" > U+1E63
+"." + "S" > U+1E62
+"." + "t" > U+1E6D
+"." + "T" > U+1E6C
+"." + "v" > U+1E7F
+"." + "V" > U+1E7E
+"." + "w" > U+1E89
+"." + "W" > U+1E88
+"." + "x" > "x" U+0323
+"." + "X" > "X" U+0323
+"." + "y" > U+1EF5
+"." + "Y" > U+1EF4
+"." + "z" > U+1E93
+"." + "Z" > U+1E92
+                       
+c underscore letters
+"_" + "a" > "a" U+0331
+"_" + "A" > "A" U+0331
+"_" + "b" > U+1E07
+"_" + "B" > U+1E06
+"_" + "c" > "c" U+0331
+"_" + "C" > "C" U+0331
+"_" + "d" > U+1E0F
+"_" + "D" > U+1E0E
+"_" + "e" > "e" U+0331
+"_" + "E" > "E" U+0331
+"_" + "f" > "f" U+0331
+"_" + "F" > "F" U+0331
+"_" + "g" > "g" U+0331
+"_" + "G" > "G" U+0331
+"_" + "h" > U+1E96
+"_" + "H" > "H" U+0331
+"_" + "i" > "i" U+0331
+"_" + "I" > "I" U+0331
+"_" + "j" > "j" U+0331
+"_" + "J" > "J" U+0331
+"_" + "k" > U+1E35
+"_" + "K" > U+1E34
+"_" + "l" > U+1E3B
+"_" + "L" > U+1E3A
+"_" + "m" > "m" U+0331
+"_" + "M" > "M" U+0331
+"_" + "n" > U+1E49
+"_" + "N" > U+1E48
+"_" + "o" > "o" U+0331
+"_" + "O" > "O" U+0331
+"_" + "p" > "p" U+0331
+"_" + "P" > "P" U+0331
+"_" + "q" > "q" U+0331
+"_" + "Q" > "Q" U+0331
+"_" + "r" > U+1E5F
+"_" + "R" > U+1E5E
+"_" + "s" > "s" U+0331
+"_" + "S" > "S" U+0331
+"_" + "t" > U+1E6F
+"_" + "T" > U+1E6E
+"_" + "u" > "u" U+0331
+"_" + "U" > "U" U+0331
+"_" + "v" > "v" U+0331
+"_" + "V" > "V" U+0331
+"_" + "w" > "w" U+0331
+"_" + "W" > "W" U+0331
+"_" + "x" > "x" U+0331
+"_" + "X" > "X" U+0331
+"_" + "y" > "y" U+0331
+"_" + "Y" > "Y" U+0331
+"_" + "z" > U+1E95
+"_" + "Z" > U+1E94
+
+c accents on special vowels
+dk(1) + any( invowels ) > index( outvowels, 2 )
+  "?" + any( invowels ) > index( outvowels, 2 )
+dk(2) + any( invowels ) > index( outvowels, 2 ) U+0301
+  "`" + any( invowels ) > index( outvowels, 2 ) U+0300
+  ":" + any( invowels ) > index( outvowels, 2 ) U+0308
+  ";" + any( invowels ) > index( outvowels, 2 ) U+0308
+  "}" + any( invowels ) > index( outvowels, 2 ) U+0302 
+  "]" + any( invowels ) > index( outvowels, 2 ) U+0302
+  "^" + any( invowels ) > index( outvowels, 2 ) U+0302
+  "{" + any( invowels ) > index( outvowels, 2 ) U+0303
+  "[" + any( invowels ) > index( outvowels, 2 ) U+0303
+  "~" + any( invowels ) > index( outvowels, 2 ) U+0303
+  "%" + any( invowels ) > index( outvowels, 2 ) U+030C
+  "_" + any( invowels ) > index( outvowels, 2 ) U+0331
+  "." + any( invowels ) > index( outvowels, 2 ) U+0323
+      
+c underscored vowels  
+  "_" dk(2) + any(plainvowels) > index(plainvowels, 3) U+0331 U+0301
+  "_" ";" + any(plainvowels) > index(plainvowels, 3) U+0331 U+0308
+  "_" "`" + any(plainvowels) > index(plainvowels, 3) U+0331 U+0300
+  "_" "}" + any(plainvowels) > index(plainvowels, 3) U+0331 U+0302
+  "_" "]" + any(plainvowels) > index(plainvowels, 3) U+0331 U+0302
+  "_" "^" + any(plainvowels) > index(plainvowels, 3) U+0331 U+0302
+  "_" "{" + any(plainvowels) > index(plainvowels, 3) U+0331 U+0303
+  "_" "[" + any(plainvowels) > index(plainvowels, 3) U+0331 U+0303
+  "_" "~" + any(plainvowels) > index(plainvowels, 3) U+0331 U+0303
+  "_" "%" + any(plainvowels) > index(plainvowels, 3) U+0331 U+030C
+  
+  "_" dk(2) + any(invowels) > index(outvowels, 3) U+0331 U+0301
+  "_" ";" + any(invowels) > index(outvowels, 3) U+0331 U+0308
+  "_" "`" + any(invowels) > index(outvowels, 3) U+0331 U+0300
+  "_" "}" + any(invowels) > index(outvowels, 3) U+0331 U+0302
+  "_" "]" + any(invowels) > index(outvowels, 3) U+0331 U+0302
+  "_" "^" + any(invowels) > index(outvowels, 3) U+0331 U+0302
+  "_" "{" + any(invowels) > index(outvowels, 3) U+0331 U+0303
+  "_" "[" + any(invowels) > index(outvowels, 3) U+0331 U+0303
+  "_" "~" + any(invowels) > index(outvowels, 3) U+0331 U+0303
+  "_" "%" + any(invowels) > index(outvowels, 3) U+0331 U+030C
+
+c underdotted vowels
+  "." dk(2) + any(plainvowels) > index(undotvowels, 3) U+0301
+  "." ":" + any(plainvowels) > index(undotvowels, 3) U+0308           
+  "." ";" + any(plainvowels) > index(undotvowels, 3) U+0308
+  "." "`" + any(plainvowels) > index(undotvowels, 3) U+0300
+  "." "^" + "a" > U+1EAD
+  "." "^" + "A" > U+1EAC
+  "." "^" + "e" > U+1EC7
+  "." "^" + "E" > U+1EC6
+  "." "^" + "i" > U+1ECB U+0302
+  "." "^" + "I" > U+1ECA U+0302
+  "." "^" + "o" > U+1ED9
+  "." "^" + "O" > U+1ED8
+  "." "^" + "u" > U+1EE5 U+0302
+  "." "^" + "U" > U+1EE4 U+0302
+  "." "]" + "a" > U+1EAD
+  "." "]" + "A" > U+1EAC
+  "." "]" + "e" > U+1EC7
+  "." "]" + "E" > U+1EC6
+  "." "]" + "o" > U+1ED9
+  "." "]" + "O" > U+1ED8
+  "." "]" + "u" > U+1EE5 U+0302
+  "." "]" + "U" > U+1EE4 U+0302
+  "." "}" + any(plainvowels) > index(undotvowels, 3) U+0302
+  "." "{" + any(plainvowels) > index(undotvowels, 3) U+0303
+  "." "[" + any(plainvowels) > index(undotvowels, 3) U+0303
+  "." "~" + any(plainvowels) > index(undotvowels, 3) U+0303
+  "." "%" + any(plainvowels) > index(undotvowels, 3) U+030C 
+
+  "." dk(2) + any(invowels) > index(outvowels, 3) U+0323 U+0301
+  "." ":" + any(invowels) > index(outvowels, 3) U+0323 U+0308
+  "." ";" + any(invowels) > index(outvowels, 3) U+0323 U+0308
+  "." "`" + any(invowels) > index(outvowels, 3) U+0323 U+0300
+  "." "}" + any(invowels) > index(outvowels, 3) U+0323 U+0302
+  "." "]" + any(invowels) > index(outvowels, 3) U+0323 U+0302
+  "." "^" + any(invowels) > index(outvowels, 3) U+0323 U+0302
+  "." "{" + any(invowels) > index(outvowels, 3) U+0323 U+0303
+  "." "[" + any(invowels) > index(outvowels, 3) U+0323 U+0303
+  "." "~" + any(invowels) > index(outvowels, 3) U+0323 U+0303
+  "." "%" + any(invowels) > index(outvowels, 3) U+0323 U+030C
+  
+c double stacked diacritics
+c I am aware that ;;'i and ;;'I could go to 1E2F and 1E2E respectively, but don't think this is wise
+c similarly, ;;'u and ;;'U could go to 01D8 and 01D7 respectively
+c BC 2009-12-18
+  ";" U+A78C + any(plainvowels) > index(umlotvowels, 3) U+0301
+  ";" ";" "~" + any(plainvowels) > index(umlotvowels, 4) U+0303
+    
+c  barred u
+c dk(1) + "\" > U+0289
+c dk(1) + "|" > U+0244
+c   "?" + "\" > U+0289
+c   "?" + "|" > U+0244 
+c dk(2) + "\" > U+00FA U+0336    acute
+c dk(2) + "|" > U+00DA U+0336    acute
+c   "`" + "\" > U+00F9 U+0336    grave
+c   "`" + "|" > U+00D9 U+0336    grave
+c   ":" + "\" > U+00FC U+0336    diearesis
+c   ":" + "|" > U+00DC U+0336    diearesis
+c   ";" + "\" > U+00FC U+0336    diearesis
+c   ";" + "|" > U+00DC U+0336    diearesis
+c   "}" + "\" > U+00FB U+0336    circumflex
+c   "}" + "|" > U+00DB U+0336    circumflex
+c   "]" + "\" > U+00FB U+0336    circumflex
+c   "]" + "|" > U+00DB U+0336    circumflex
+c   "^" + "\" > U+00FB U+0336    circumflex
+c   "^" + "|" > U+00DB U+0336    circumflex
+c   "{" + "\" > U+00FC U+0336
+c   "{" + "|" > U+00DC U+0336
+c   "[" + "\" > U+0169 U+0336
+c   "[" + "|" > U+0168 U+0336
+c   "~" + "\" > U+0169 U+0336
+c   "~" + "|" > U+0168 U+0336
+c   "%" + "\" > U+01D4 U+0336    caron
+c   "%" + "|" > U+01D3 U+0336    caron
+  
+c u with macron
+  dk(1) + "u" > U+016B
+  "?" + "u" > U+016B 
+  dk(1) + "U" > U+016A
+  "?" + "U" > U+016A
+
+c z with macron
+  dk(1) + "z" > "z" U+0304
+   "?"  + "z" > "z" U+0304
+  dk(1) + "Z" > "Z" U+0304
+   "?"  + "Z" > "Z" U+0304
+
+c a with dot over it
+dk(1) + "a" > U+00E5
+dk(1) + "A" > U+00C5
+  "?" + "a" > U+00E5
+  "?" + "A" > U+00C5
+  
+c barred o
+dk(1) + "o" > U+00F8
+dk(1) + "O" > U+00D8
+  "?" + "o" > U+00F8
+  "?" + "O" > U+00D8  
+dk(2) dk(1) + "o" > U+01FF
+dk(2) "?" + "o" > U+01FF
+dk(2) dk(1) + "O" > U+01FE
+dk(2) "?" + "O" > U+01FE
+
+c weird B's
+";" + "b" > U+00DF
+";" + "B" > U+00DF
+":" + "b" > U+00DF 
+":" + "B" > U+00DF
+
+dk(1) + "b" > U+0253
+dk(1) + "B" > U+0181
+"?" + "b" > U+0253
+"?" + "B" > U+0181
+
+c c with sedille
+";" + "c" > U+00E7
+";" + "C" > U+00C7
+":" + "c" > U+00E7
+":" + "C" > U+00C7
+
+c weird D's
+";" + "d" > U+0111
+";" + "D" > U+0110
+":" + "d" > U+0111
+":" + "D" > U+0110
+
+dk(1) + "d" > U+0257
+dk(1) + "D" > U+018A
+"?" + "d" > U+0257
+"?" + "D" > U+018A
+
+c i without dot
+c 2009-12-18 BC I don't think this is genuinely used in Sudanese languages
+c dk(1) + "i" > U+0131
+c "?" + "i" > U+0131
+
+c 
+";" + "m" > U+00B5 
+";" + "M" > U+00B5
+":" + "m" > U+00B5 
+":" + "M" > U+00B5
+
+c the n with tilde
+"{" + "n" > U+00F1
+"{" + "N" > U+00D1
+"[" + "n" > U+00F1
+"[" + "N" > U+00D1
+"~" + "n" > U+00F1
+"~" + "N" > U+00D1
+dk(1) + "n" > "n" U+0330
+"?" + "n" > "n" U+0330
+dk(1) + "N" > "N" U+0330
+"?" + "N" > "N" U+0330
+
+c s with upside down carrot
+";" + "s" > U+0161
+";" + "S" > U+0160
+":" + "s" > U+0161 
+":" + "S" > U+0160
+
+c dotted y                      
+";" + "y" > U+00FF
+";" + "Y" > U+0178
+":" + "y" > U+00FF
+":" + "Y" > U+0178
+ 
+c c barred Y
+c "-" + "y" > U+00A5 
+c "-" + "Y" > U+00A5
+c "_" + "y" > U+00A5 
+c "_" + "Y" > U+00A5
+c "=" + "y" > U+00A5 
+c "=" + "Y" > U+00A5
+c "+" + "y" > U+00A5 
+c "+" + "Y" > U+00A5
+
+c barred J
+";" + "J" > U+0248
+":" + "J" > U+0248
+";" + "j" > U+0249
+":" + "j" > U+0249
+
+c the connected ae
+"+" + "a" > U+00E6 
+"+" + "A" > U+00C6
+"=" + "a" > U+00E6 
+"=" + "A" > U+00C6
+
+c the connected oe
+"+" + "o" > U+0153 
+"+" + "O" > U+0152
+"=" + "o" > U+0153 
+"=" + "O" > U+0152
+
+c c the weird p
+c ";" + "p" > U+00FE 
+c ";" + "P" > U+00DE
+c ":" + "p" > U+00FE 
+c ":" + "P" > U+00DE
+
+c the ng
+";" + "n" > U+014B 
+";" + "N" > U+014A
+":" + "n" > U+014B 
+":" + "N" > U+014A
+
+c r with tail 
+dk(1) + "r" > U+027D
+dk(1) + "R" > U+2C64
+"?" + "r" > U+027D
+"?" + "R" > U+2C64
+
+c gamma
+";" + "g" > U+0263 
+";" + "G" > U+0194
+":" + "g" > U+0263 
+":" + "G" > U+0194   
+
+c the glottal stop
+";" + "?" > U+0294 
+";" + "/" > U+0294
+":" + "?" > U+0294 
+":" + "/" > U+0294
+                    
+c writing lines
+'>' + '-' > U+E005
+'>' + '_' > U+E005
+'>' + '=' > U+E006
+'>' + '~' > U+E007
+'>' + '+' > U+E008
+'<' + '-' > U+E001
+'<' + '_' > U+E001
+'<' + '=' > U+E002
+'<' + '~' > U+E003
+'<' + '+' > U+E004
+
+c joining lines
+";" + '"' > U+E000
+
+c x with accent
+dk(2) + "x" > "x" U+0301 
+dk(2) + "X" > "X" U+0301
+
+c q with accent
+dk(2) + "q" > "q" U+0301 
+dk(2) + "Q" > "Q" U+0301
+
+c narrow space
+dk(1) + " " > U+2009

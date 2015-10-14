@@ -1,0 +1,146 @@
+c SWP Many Vowels Keyboard (only for people who don't like GE)
+
+
+VERSION 6.0
+NAME "Many Vowels"
+
+BITMAP "MV.bmp"
+
+store(&MnemonicLayout) "1"        c This keyboard uses a mnemonic layout.
+
+begin Unicode > use(main)
+
+group(main) using keys
+
+c punctuation
+"<" + "'" > U+2018
+">" + "'" > U+2019
+'<' + '"' > U+201C
+'>' + '"' > U+201D
+'~' + '~' > U+2013
+U+2013 + U+2013 > U+2014
+'@' + 'c' > U+00A9
+'@' + 'C' > U+00A9
+";" + "'" > U+A78C 
+
+c maths signs, etc.
+'~' + '"' > U+00B1
+'~' + "'" > U+00D7
+'~' + ';' > U+00F7
+'~' + ':' > U+00F7
+'^' + '.' > U+00B7
+'@' + '-' > "-"
+'@' + '=' > "="
+'@' + '+' > "+"
+'@' + '\' > "\"
+
+c powers
+'^' + '0' > U+2070
+'^' + '1' > U+00B9
+'^' + '2' > U+00B2
+'^' + '3' > U+00B3
+
+c fractions
+';' + '1' > U+00BC
+';' + '2' > U+00BD
+';' + '3' > U+00BE
+
+c writing lines
+c '<' + '-' > d171
+c ' + '_' > d171
+c '<' + '=' > d132
+c '<' + '~' > d135
+c '<' + '+' > d187
+c '>' + '-' > d133
+c '>' + '_' > d133
+c '>' + '=' > d134
+c '>' + '~' > d161
+c '>' + '+' > d181
+
+c joining marks
+c ';' + '"' > d191
+
+c isolated tone marks
+'^' + '^' > U+0020 U+0302 
+'^' + ']' > U+0020 U+0302
+'^' + '`' > U+0020 U+0300
+'^' + ':' > U+0020 U+0308
+'^' + ';' > U+0020 U+0308
+'^' + '~' > U+0020 U+0303
+'^' + "'" > U+0020 U+0301
+
+c apostrophe
+';' + "'" > U+0301
+
+c narrow space
+c ';' + d32 > d166
+c ':' + d32 > d166 
+
+c letters
+store(plainvowels) "aeiouAEIOU" 
+    store(invowels) "=[-]+{_}"
+   store(outvowels) U+01DD U+025B U+0268 U+0254 U+018E U+0190 U+0197 U+0186
+ store(acutevowels) U+00E1 U+00E9 U+00ED U+00F3 U+00FA U+00C1 U+00C9 U+00CD U+00D3 U+00DA
+ store(gravevowels) U+00E0 U+00E8 U+00EC U+00F2 U+00F9 U+00C0 U+00C8 U+00CC U+00D2 U+00D9
+ store(umlotvowels) U+00E4 U+00EB U+00EF U+00F6 U+00FC U+00C4 U+00CB U+00CF U+00D6 U+00DC
+"'" + any(plainvowels) > index(acutevowels, 2) 
+":" + any(plainvowels) > index(umlotvowels, 2)
+";" + any(plainvowels) > index(umlotvowels, 2)
+"`" + any(plainvowels) > index(gravevowels, 2)
+    + any(invowels) > index(outvowels, 1)
+"'" + any(invowels ) > index(outvowels, 2 ) U+0301
+"`" + any(invowels ) > index(outvowels, 2 ) U+0300
+":" + any(invowels ) > index(outvowels, 2 ) U+0308
+";" + any(invowels ) > index(outvowels, 2 ) U+0308
+
+   
+c  barred u
+ + "\" > U+0289
+"?" + "|" > U+0244
+ + "|" > U+0244
+"?" + "\" > U+0289
+"'" + "\" > U+0289 U+0301
+"'" + "|" > U+0244 U+0301
+"`" + "\" > U+0289 U+0300
+"`" + "|" > U+0244 U+0300
+":" + "\" > U+0289 U+0308
+":" + "|" > U+0244 U+0308
+";" + "\" > U+0289 U+0308
+";" + "|" > U+0244 U+0308
+
+
+c the n with tilde
+"{" + "n" > U+00F1
+"{" + "N" > U+00D1
+"[" + "n" > U+00F1
+"[" + "N" > U+00D1
+"~" + "n" > U+00F1
+"~" + "N" > U+00D1
+ 
+c the ng
+";" + "n" > U+014B 
+";" + "N" > U+014A
+":" + "n" > U+014B 
+":" + "N" > U+014A
+
+c r with dot underneath
+";" + "r" > U+1E5B 
+";" + "R" > U+1E5A
+":" + "r" > U+1E5B
+":" + "R" > U+1E5A
+"." + "r" > U+1E5B
+"." + "R" > U+1E5A
+">" + "r" > U+1E5B
+">" + "R" > U+1E5A
+
+c the weird Y
+";" + "g" > U+0263 
+";" + "G" > U+0194
+":" + "g" > U+0263 
+":" + "G" > U+0194    
+
+c the glottal stop
+";" + "?" > U+0294 
+";" + "/" > U+0294
+":" + "?" > U+0294 
+":" + "/" > U+0294
