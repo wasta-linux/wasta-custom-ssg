@@ -1,2 +1,3 @@
-install-files/kmfl     usr/share
-wasta-custom-ssg       usr/share
+install-files/kmfl                          usr/share
+install-files/wasta-custom-ssg.appdata.xml  usr/share/appdata
+wasta-custom-ssg                            usr/share
