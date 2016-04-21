@@ -1,3 +1,9 @@
+wasta-custom-ssg (1.0.1) xenial; urgency=medium
+
+  * appdata.xml addition for gnome-software compatibilty
+
+ -- Rik Shaw <rikshaw76@gmail.com>  Thu, 21 Apr 2016 08:24:49 +0300
+
 wasta-custom-ssg (1.0.0) precise; urgency=medium
 
   * Initial GitHub / Launchpad commit
