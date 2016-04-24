@@ -1,3 +1,9 @@
+wasta-custom-ssg (1.0.4) xenial; urgency=medium
+
+  * removing metainfo.xml as I think conflicts with appdata.xml
+
+ -- Rik Shaw <rikshaw76@gmail.com>  Sun, 24 Apr 2016 21:55:12 +0300
+
 wasta-custom-ssg (1.0.3) xenial; urgency=medium
 
   * appdata.xml, metainfo.xml testing for gnome-software compatibility
