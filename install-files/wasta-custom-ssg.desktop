@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=wasta-custom-ssg
+Comment=Wasta-Linux SSG Customization
+Exec=echo
+Terminal=false
+Type=Application
+Icon=wasta-linux
+Categories=Application;System;
+Hidden=true

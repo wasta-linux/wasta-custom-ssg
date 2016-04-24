@@ -1,3 +1,9 @@
+wasta-custom-ssg (1.0.3) xenial; urgency=medium
+
+  * appdata.xml, metainfo.xml testing for gnome-software compatibility
+
+ -- Rik Shaw <rikshaw76@gmail.com>  Sun, 24 Apr 2016 20:17:40 +0300
+
 wasta-custom-ssg (1.0.2) xenial; urgency=medium
 
   * debian/control: removed wasta-base-setup dependency, changed to 'all' arch
