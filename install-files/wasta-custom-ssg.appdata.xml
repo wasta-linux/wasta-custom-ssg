@@ -8,13 +8,8 @@
   <description>
     <p>APPDATA.XML DESKTOP matching wasta-custom-ssg.desktop: All SSG users of Wasta-Linux should install this package.</p>
   </description>
-  <screenshots>
-    <screenshot type="default">
-      <image>https://sites.google.com/site/wastalinux/wasta-applications/wasta-backup/wasta-backup-16-04-700.png</image>
-    </screenshot>
-  </screenshots>
-  <url type="homepage">https://github.com/wasta-linux/wasta-backup</url>
-  <url type="bugtracker">https://github.com/wasta-linux/wasta-backup/issues</url>
+  <url type="homepage">https://github.com/wasta-linux/wasta-custom-ssg</url>
+  <url type="bugtracker">https://github.com/wasta-linux/wasta-custom-ssg/issues</url>
   <update_contact>wasta-linux-team_at_gmail.com</update_contact>
-  <translation type="gettext">wasta-backup</translation>
+  <translation type="gettext">wasta-custom-ssg</translation>
 </component>
