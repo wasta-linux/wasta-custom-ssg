@@ -202,7 +202,7 @@ then
     cp $APT_SOURCES $APT_SOURCES.save
 fi
 
-if ! [ -e $APT_SOURCES_D/libreoffice-ubuntu-libreoffice-5-2-$REPO_SERIES.list ];
+if ! [ -e $APT_SOURCES_D/libreoffice-ubuntu-libreoffice-5-0-$REPO_SERIES.list ];
 then
     echo
     echo "*** Adding LibreOffice 5.0 $REPO_SERIES PPA"
