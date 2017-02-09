@@ -22,6 +22,8 @@
 #       define if bold or normal spacing used, regardless of whether actual
 #       bold or normal characters are entered.  Disabling Graphite corrects
 #       this problem.
+#   2017-02-09 rik: adding LO 5.0 PPA
+#       - adding 'disable VBA refactoring' LO extension for all users
 #
 # ==============================================================================
 
@@ -122,23 +124,136 @@ echo
 echo "*** Beginning wasta-custom-ssg-postinst.sh"
 echo
 
+# setup directory for reference later
+DIR=/usr/share/wasta-custom-ssg/resources
+
 # ------------------------------------------------------------------------------
 # Symlinking scripts to /usr/bin so can run without path from terminal
 # ------------------------------------------------------------------------------
 echo
 echo "*** Adding ssg-kmfl-setup.sh symlink to /usr/bin"
 echo
-ln -sf /usr/share/wasta-custom-ssg/ssg-kmfl-setup.sh /usr/bin/ssg-kmfl-setup
+ln -sf $DIR/ssg-kmfl-setup.sh /usr/bin/ssg-kmfl-setup
+
+# ------------------------------------------------------------------------------
+# Add LibreOffice 5.0 PPA
+# ------------------------------------------------------------------------------
+
+# get series, load them up.
+SERIES=$(lsb_release -sc)
+case "$SERIES" in
+
+  precise|maya)
+    #LTS 12.04-based Mint 13.x
+    REPO_SERIES="precise"
+  ;;
+
+  trusty|qiana|rebecca|rafaela|rosa)
+    #LTS 14.04-based Mint 17.x
+    REPO_SERIES="trusty"
+  ;;
+
+  xenial|sarah)
+    #LTS 16.04-based Mint 18.x
+    REPO_SERIES="xenial"
+  ;;
+
+  *)
+    # Don't know the series, just go with what is reported
+    REPO_SERIES=$SERIES
+  ;;
+esac
+
+APT_SOURCES=/etc/apt/sources.list
+
+if ! [ -e $APT_SOURCES.wasta ];
+then
+    APT_SOURCES_D=/etc/apt/sources.list.d
+else
+    # wasta-offline active: adjust apt file locations
+    echo
+    echo "*** wasta-offline active, applying repository adjustments to /etc/apt/sources.list.wasta"
+    echo
+    APT_SOURCES=/etc/apt/sources.list.wasta
+    if [ "$(ls -A /etc/apt/sources.list.d)" ];
+    then
+        echo
+        echo "*** wasta-offline 'offline and internet' mode detected"
+        echo
+        # files inside /etc/apt/sources.list.d so it is active
+        # wasta-offline "offline and internet mode": no change to sources.list.d
+        APT_SOURCES_D=/etc/apt/sources.list.d
+    else
+        echo
+        echo "*** wasta-offline 'offline only' mode detected"
+        echo
+        # no files inside /etc/apt/sources.list.d
+        # wasta-offline "offline only mode": change to sources.list.d.wasta
+        APT_SOURCES_D=/etc/apt/sources.list.d.wasta
+    fi
+fi
+
+# first backup $APT_SOURCES in case something goes wrong
+# delete $APT_SOURCES.save if older than 30 days
+find /etc/apt  -maxdepth 1 -mtime +30 -iwholename $APT_SOURCES.save -exec rm {} \;
+
+if ! [ -e $APT_SOURCES.save ];
+then
+    cp $APT_SOURCES $APT_SOURCES.save
+fi
+
+if ! [ -e $APT_SOURCES_D/libreoffice-ubuntu-libreoffice-5-2-$REPO_SERIES.list ];
+then
+    echo
+    echo "*** Adding LibreOffice 5.0 $REPO_SERIES PPA"
+    echo
+    echo "deb http://ppa.launchpad.net/libreoffice/libreoffice-5-0/ubuntu $REPO_SERIES main" | \
+        tee $APT_SOURCES_D/libreoffice-ubuntu-libreoffice-5-0-$REPO_SERIES.list
+    echo "# deb-src http://ppa.launchpad.net/libreoffice/libreoffice-5-0/ubuntu $REPO_SERIES main" | \
+        tee -a $APT_SOURCES_D/libreoffice-ubuntu-libreoffice-5-0-$REPO_SERIES.list
+else
+    # found, but ensure Wasta-Linux PPA ACTIVE (user could have accidentally disabled)
+    echo
+    echo "*** LibreOffice 5.0 $REPO_SERIES PPA already exists, ensuring active"
+    echo
+    sed -i -e '$a deb http://ppa.launchpad.net/libreoffice/libreoffice-5-0/ubuntu '$REPO_SERIES' main' \
+        -i -e '\@deb http://ppa.launchpad.net/libreoffice/libreoffice-5-0/ubuntu '$REPO_SERIES' main@d' \
+        $APT_SOURCES_D/libreoffice-ubuntu-libreoffice-5-0-$REPO_SERIES.list
+fi
 
 # ------------------------------------------------------------------------------
 # LibreOffice Preferences Extension install (for all users)
 # ------------------------------------------------------------------------------
 
+# REMOVE "Disable VBA Refactoring" extension: only way to update is
+#   remove then reinstall
+EXT_FOUND=$(ls /var/spool/libreoffice/uno_packages/cache/uno_packages/*/disable-vba-refactoring* 2> /dev/null)
+
+if [ "$EXT_FOUND" ];
+then
+    unopkg remove --shared disable-vba-refactoring.oxt
+fi
+
+# Install disable-vba-refactoring.oxt
+echo
+echo "*** Installing/Upating Disable VBA Refactoring LO Extension"
+echo
+unopkg add --shared $DIR/disable-vba-refactoring.oxt
+
+# REMOVE "Disable VBA Refactoring" extension: only way to update is
+#   remove then reinstall
+EXT_FOUND=$(ls /var/spool/libreoffice/uno_packages/cache/uno_packages/*/wasta-ssg-odf-defaults* 2> /dev/null)
+
+if [ "$EXT_FOUND" ];
+then
+    unopkg remove --shared wasta-ssg-odf-defaults.oxt
+fi
+
 # Install wasta-ssg-defaults.oxt (Default LibreOffice Preferences)
 echo
 echo "*** Installing SSG LO ODF Default Settings Extension (for all users)"
 echo
-unopkg add --shared /usr/share/wasta-custom-ssg/resources/wasta-ssg-odf-defaults.oxt
+unopkg add --shared $DIR/wasta-ssg-odf-defaults.oxt
 
 # REMOVE "Non-ODF" extension: default for SSG is now ODF
 # Send error to null so won't display
@@ -146,9 +261,6 @@ EXT_FOUND=$(ls /var/spool/libreoffice/uno_packages/cache/uno_packages/*/wasta-ss
 
 if [ "$EXT_FOUND" ];
 then
-    echo
-    echo "*** Removing SSG LO (non ODF) Extension"
-    echo
     unopkg remove --shared wasta-ssg-defaults.oxt
 fi
 
@@ -180,6 +292,8 @@ done
 # Create file with modified date of desired comparison time
 #   so that don't remove a user's updated files if they have made a
 #   custom update to them.
+
+# 2017-02-09 rik: is this needed?  I thought the shared extensions would be added without resetting prefs???
 COMPFILE=$(mktemp)
 touch $COMPFILE -d '2015-01-26'
 
@@ -187,18 +301,6 @@ delOldFile "/home/*/.config/libreoffice/" $COMPFILE "YES"
 
 # remove comparison time file
 rm $COMPFILE
-
-# ------------------------------------------------------------------------------
-# LibreOffice: Disable Graphite
-# ------------------------------------------------------------------------------
-# 2015-02-09 rik: thanks to jcl!
-#   Spacing of SIL fonts is not right with graphite enabled: the "bold" and
-#   "regular" faces use the same spacing.  This is a bug filed with NRSI.
-#   After fixed and we have new versions of the fonts, can remove the
-#   env SAL_DISABLE_GRAPHITE=true.
-sed -i -e 's| SAL_DISABLE_GRAPHITE=true||g' \
-    -i -e 's|^Exec=\(env \)*|Exec=env SAL_DISABLE_GRAPHITE=true |' \
-    /usr/share/applications/libreoffice-*.desktop
 
 # ------------------------------------------------------------------------------
 # Set system-wide Paper Size
