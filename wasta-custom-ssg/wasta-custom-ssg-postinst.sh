@@ -24,6 +24,9 @@
 #       this problem.
 #   2017-02-09 rik: adding LO 5.0 PPA
 #       - adding 'disable VBA refactoring' LO extension for all users
+#   2017-03-25 rik: XENIAL BUILD ONLY adding 5.2 PPA, removing 5.0,5.1,4.4 ppas
+#       - removing delete of LO settings (was done if settings were old but
+#       this shouldn't be needed by using extensions?
 #
 # ==============================================================================
 
@@ -39,82 +42,6 @@ then
 	sleep 5s
 	exit 1
 fi
-
-# ------------------------------------------------------------------------------
-# Function: delOldFile
-#   Remove passed filename (all files matching passed pattern) if it exists
-#   AND it is OLDER than $COMPFILE (also can recursively remove a directory)
-#
-#   Parameter 1: item pattern (for directory removal, have last character a "/")
-#
-#       NOTE: wrap passed filename in double quotes so that wildcards NOT expanded
-#       or else every filename match will be a different parameter: we want file
-#       pattern to be just one parameter passed to delOldFile function
-#
-#   Parameter 2: Comparison File (use touch -d "YYYY-MM-DD" to set the
-#       modified date of this comparison file before passing to delOldFile.) 
-#
-#   Parameter 3: IGNORE Symlink OPTIONAL: if "YES", then will NOT delete
-#       old file/folder IF it is a symlink
-# ------------------------------------------------------------------------------
-delOldFile () {
-    # If last character is a "/", we are dealing with a diretory, and need to
-    #   do "ls -d" instead of normal ls to list.
-    LAST_CHAR=$(echo -n "$1" | tail -c1)
-    # IFS command: Need to change delimiter in list to 'newline' instead of space.
-    #   this way, for loop won't split apart if filename has a space
-    #   warning, if use just sh instead of bash, need to have a literal newline
-    OLDIFS=$IFS
-    IFS=$'\n'
-    # not sure why, but any spaces in $1 not a problem here ("Make PDF Booklet")
-    #   If attempt to do "$1" (with quotes) then wildcard not expanded so don't
-    #   want that.  So, keeping as is even though seems odd not needed.
-    if [ "$LAST_CHAR" == "/" ];
-    then
-        #Directory pattern
-        DEL_LIST=$(ls -d $1 2>/dev/null || true;)
-    else
-        #File pattern
-        DEL_LIST=$(ls $1 2>/dev/null || true;)
-    fi
-    # if $DEL_LIST is empty (from above command), won't process
-    if [ -n "$DEL_LIST" ];
-    then
-        # System Install Date taken from modified date of installer/version file
-        INSTALL_DATE=$(date +%Y-%m-%d --reference=/var/log/installer/version)
-        
-        for DEL_FILE in $DEL_LIST; do
-            
-            DEL_FILE_DATE=$(date +%Y-%m-%d --reference="$DEL_FILE")
-            
-            if [ $3 == "YES" ] && [ -h "$DEL_FILE" ];
-            then
-                # don't process on this file - is a symlink
-                echo
-                echo "*** NOT Removing symlink: " $DEL_FILE
-                echo
-            else
-                # Delete IF DEL_FILE older than Passed reference date OR
-                #   if the date of DEL_FILE is the same as the system install date
-                if [ "$DEL_FILE" -ot $2 ] || [ $DEL_FILE_DATE = $INSTALL_DATE ];
-                then
-                    echo
-                    echo "*** Removing OLD item: " $DEL_FILE
-                    echo
-                    rm -r "$DEL_FILE"
-                else
-                    echo
-                    echo "*** NOT Removing item (newer than legacy date): " $DEL_FILE
-                    echo
-                fi
-            fi
-        done
-    fi
-
-    # Return IFS to prior setting
-    IFS=$OLDIFS
-}
-
 
 # ------------------------------------------------------------------------------
 # Initial Setup
@@ -136,7 +63,7 @@ echo
 ln -sf $DIR/ssg-kmfl-setup.sh /usr/bin/ssg-kmfl-setup
 
 # ------------------------------------------------------------------------------
-# Add LibreOffice 5.0 PPA
+# Add LibreOffice 5.2 PPA
 # ------------------------------------------------------------------------------
 
 # get series, load them up.
@@ -202,24 +129,29 @@ then
     cp $APT_SOURCES $APT_SOURCES.save
 fi
 
-if ! [ -e $APT_SOURCES_D/libreoffice-ubuntu-libreoffice-5-0-$REPO_SERIES.list ];
+if ! [ -e $APT_SOURCES_D/libreoffice-ubuntu-libreoffice-5-2-$REPO_SERIES.list ];
 then
     echo
-    echo "*** Adding LibreOffice 5.0 $REPO_SERIES PPA"
+    echo "*** Adding LibreOffice 5.2 $REPO_SERIES PPA"
     echo
-    echo "deb http://ppa.launchpad.net/libreoffice/libreoffice-5-0/ubuntu $REPO_SERIES main" | \
+    echo "deb http://ppa.launchpad.net/libreoffice/libreoffice-5-2/ubuntu $REPO_SERIES main" | \
         tee $APT_SOURCES_D/libreoffice-ubuntu-libreoffice-5-0-$REPO_SERIES.list
-    echo "# deb-src http://ppa.launchpad.net/libreoffice/libreoffice-5-0/ubuntu $REPO_SERIES main" | \
+    echo "# deb-src http://ppa.launchpad.net/libreoffice/libreoffice-5-2/ubuntu $REPO_SERIES main" | \
         tee -a $APT_SOURCES_D/libreoffice-ubuntu-libreoffice-5-0-$REPO_SERIES.list
 else
-    # found, but ensure Wasta-Linux PPA ACTIVE (user could have accidentally disabled)
+    # found, but ensure LO 5.2 PPA ACTIVE (user could have accidentally disabled)
     echo
-    echo "*** LibreOffice 5.0 $REPO_SERIES PPA already exists, ensuring active"
+    echo "*** LibreOffice 5.2 $REPO_SERIES PPA already exists, ensuring active"
     echo
-    sed -i -e '$a deb http://ppa.launchpad.net/libreoffice/libreoffice-5-0/ubuntu '$REPO_SERIES' main' \
-        -i -e '\@deb http://ppa.launchpad.net/libreoffice/libreoffice-5-0/ubuntu '$REPO_SERIES' main@d' \
+    sed -i -e '$a deb http://ppa.launchpad.net/libreoffice/libreoffice-5-2/ubuntu '$REPO_SERIES' main' \
+        -i -e '\@deb http://ppa.launchpad.net/libreoffice/libreoffice-5-2/ubuntu '$REPO_SERIES' main@d' \
         $APT_SOURCES_D/libreoffice-ubuntu-libreoffice-5-0-$REPO_SERIES.list
 fi
+
+# remove 5.0, 4.4 PPAs if exist
+rm -f $APT_SOURCES_D/libreoffice-libreoffice-5-0*
+rm -f $APT_SOURCES_D/libreoffice-libreoffice-5-1*
+rm -f $APT_SOURCES_D/libreoffice-libreoffice-4-4* # could be leftover from precise settings run on xenial
 
 # ------------------------------------------------------------------------------
 # LibreOffice Preferences Extension install (for all users)
@@ -283,24 +215,6 @@ do
         rm -rf $LO_FOLDER
     fi
 done
-
-# For ALL users, delete LO config folder if older than specified date
-#   (this will ensure that ODF file extensions used by system extension above)
-#   since will be re-created when LO launched.  Effectively we are resetting
-#   LO preferences.
-
-# Create file with modified date of desired comparison time
-#   so that don't remove a user's updated files if they have made a
-#   custom update to them.
-
-# 2017-02-09 rik: is this needed?  I thought the shared extensions would be added without resetting prefs???
-COMPFILE=$(mktemp)
-touch $COMPFILE -d '2015-01-26'
-
-delOldFile "/home/*/.config/libreoffice/" $COMPFILE "YES"
-
-# remove comparison time file
-rm $COMPFILE
 
 # ------------------------------------------------------------------------------
 # Set system-wide Paper Size
