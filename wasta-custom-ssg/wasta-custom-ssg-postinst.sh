@@ -27,6 +27,8 @@
 #   2017-03-25 rik: XENIAL BUILD ONLY adding 5.2 PPA, removing 5.0,5.1,4.4 ppas
 #       - removing delete of LO settings (was done if settings were old but
 #       this shouldn't be needed by using extensions?
+#   2017-03-30 rik: add wasta-custom-ssg/resources/goldendict to goldendict
+#       dictionary paths (for all users)
 #
 # ==============================================================================
 
@@ -215,6 +217,108 @@ do
         rm -rf $LO_FOLDER
     fi
 done
+
+# ------------------------------------------------------------------------------
+# ibus: load up "standard" keyboards for users
+# This assumes ibus 1.5+ (so doesn't work for precise)
+# ------------------------------------------------------------------------------
+LOCAL_USERS=""
+for USER_FOLDER in $(ls -1 home)
+do
+    # if user is in /etc/passwd then it is a 'real user' as opposed to
+    # something like wasta-remastersys
+    if [ "$(grep $USER_FOLDER /etc/passwd)" ];
+    then
+        LOCAL_USERS+="$USER_FOLDER "
+    fi
+done
+
+for CURRENT_USER in $LOCAL_USERS;
+do
+    # not sure why these are owned by root sometimes but shouldn't be
+    chown -R $CURRENT_USER:$CURRENT_USER /home/$CURRENT_USER/.config/ibus
+    chown -R $CURRENT_USER:$CURRENT_USER /home/$CURRENT_USER/.cache/dconf
+
+    # need to know if need to start dbus for user
+    # don't use dbus-run-session for logged in user or it doesn't work
+    LOGGED_IN_USER="${SUDO_USER:-$USER}"
+    if [[ "$LOGGED_IN_USER" == "$CURRENT_USER" ]];
+    then
+        #echo "login is same as current: $CURRENT_USER"
+        DBUS_SESSION=""
+    else
+        #echo "user not logged in, running update with dbus: $CURRENT_USER"
+        DBUS_SESSION="dbus-run-session --"
+    fi
+
+    IBUS_ENGINES=$(su -l "$CURRENT_USER" -c "$DBUS_SESSION gsettings get org.freedesktop.ibus.general preload-engines")
+    ENGINES_ORDER=$(su -l "$CURRENT_USER" -c "$DBUS_SESSION gsettings get org.freedesktop.ibus.general engines-order")
+
+    # remove legacy engine names
+    # (, \)\{0,1\} removes any OPTIONAL ", " preceding the kmfl keyboard name
+    #IBUS_ENGINES=$(sed -e "s@\(, \)\{0,1\}'/usr/share/kmfl/SILEthiopic-1.3.kmn'@@" <<<"$IBUS_ENGINES")
+    #IBUS_ENGINES=$(sed -e "s@\(, \)\{0,1\}'/usr/share/kmfl/sil-el-ethiopian-latin.kmn'@@" <<<"$IBUS_ENGINES")
+    #IBUS_ENGINES=$(sed -e "s@\(, \)\{0,1\}'/usr/share/kmfl/EL.kmn'@@" <<<"$IBUS_ENGINES")
+    #IBUS_ENGINES=$(sed -e "s@\(, \)\{0,1\}'/usr/share/kmfl/sil-pwrgeez.kmn'@@" <<<"$IBUS_ENGINES")
+
+    if [[ "$IBUS_ENGINES" == *"[]"* ]];
+    then
+        echo
+        echo "!!!NO ibus preload-engines found for user: $CURRENT_USER"
+        echo
+        # no engines currently: shouldn't normally happen so add en US as a fallback base
+        IBUS_ENGINES="['xkb:us::eng']"
+    fi
+
+    AR_INSTALLED=$(grep "xkb:ara::ara" <<<"$IBUS_ENGINES")
+    if [[ -z "$AR_INSTALLED" ]];
+    then
+        echo
+        echo "Installing Arabic keyboard for user: $CURRENT_USER"
+        echo
+        # append engine to list
+        IBUS_ENGINES=$(sed -e "s@']@', 'xkb:ara::ara']@" <<<"$IBUS_ENGINES")
+    fi
+
+    GE_INSTALLED=$(grep GE.kmn <<<"$IBUS_ENGINES")
+    if [[ -z "$GE_INSTALLED" ]];
+    then
+        echo
+        echo "Installing GE keyboard for user: $CURRENT_USER"
+        echo
+        # append engine to list
+        IBUS_ENGINES=$(sed -e "s@']@', '/usr/share/kmfl/GE.kmn']@" <<<"$IBUS_ENGINES")
+    fi
+
+    # set engines
+    su -l "$CURRENT_USER" -c "$DBUS_SESSION gsettings set org.freedesktop.ibus.general preload-engines \"$IBUS_ENGINES\"" >/dev/null 2>&1
+
+    # restart ibus
+    su -l "$CURRENT_USER" -c "$DBUS_SESSION ibus restart" >/dev/null 2>&1
+done 
+
+# ------------------------------------------------------------------------------
+# goldendict add wasta-custom-ssg path for dictionaries (all users)
+# ------------------------------------------------------------------------------
+echo
+echo "*** Ensuring Arabic <==> English GoldenDict Dictionaries Installed (for all users)"
+echo
+# touch files first to make sure exist
+touch /home/*/.goldendict/config
+touch /etc/skel/.goldendict/config
+
+# FIRST delete existing element
+# rik: can't get hte xmlstarlet to delete only the right path, so just using sed
+#xmlstarlet ed --inplace --delete 'config/paths/path[path="/usr/share/wasta-custom-ssg/resources/goldendict"]'     /home/*/.goldendict/config
+sed -i -e '\@usr/share/wasta-custom-ssg/resources/goldendict@d' \
+    /home/*/.goldendict/config /etc/skel/.goldendict/config
+
+# create it with element name pathTMP, then can apply attr and then rename to path
+xmlstarlet ed --inplace -s 'config/paths' -t elem -n 'pathTMP' \
+        -v '/usr/share/wasta-custom-ssg/resources/goldendict' \
+    -s 'config/paths/pathTMP' -t attr -n 'recursive' -v '0' \
+    -r 'config/paths/pathTMP' -v path \
+    /home/*/.goldendict/config /etc/skel/.goldendict/config
 
 # ------------------------------------------------------------------------------
 # Set system-wide Paper Size
