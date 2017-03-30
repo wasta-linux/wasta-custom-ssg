@@ -1,3 +1,18 @@
+wasta-custom-ssg (1.9.1) xenial; urgency=medium
+
+  * postinst: add wasta-custom-ssg path to goldendict dictionary paths
+  * wasta-custom-ssg/resources: add goldendict folder with arabic-english
+    dictionaries
+
+ -- Rik Shaw <rikshaw76@gmail.com>  Thu, 30 Mar 2017 16:30:50 +0300
+
+wasta-custom-ssg (1.9.0) xenial; urgency=medium
+
+  * xenial only: removing the "delOldFile" logic for LibreOffice prefs
+  * adding LO 5.2 PPA
+
+ -- Rik Shaw <rikshaw76@gmail.com>  Sat, 25 Mar 2017 18:15:00 +0300
+
 wasta-custom-ssg (1.0.7) precise; urgency=medium
 
   * syntax fix on adding LO 5.0 PPA

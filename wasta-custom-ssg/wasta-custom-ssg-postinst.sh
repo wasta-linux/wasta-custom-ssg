@@ -24,6 +24,11 @@
 #       this problem.
 #   2017-02-09 rik: adding LO 5.0 PPA
 #       - adding 'disable VBA refactoring' LO extension for all users
+#   2017-03-25 rik: XENIAL BUILD ONLY adding 5.2 PPA, removing 5.0,5.1,4.4 ppas
+#       - removing delete of LO settings (was done if settings were old but
+#       this shouldn't be needed by using extensions?
+#   2017-03-30 rik: add wasta-custom-ssg/resources/goldendict to goldendict
+#       dictionary paths (for all users)
 #
 # ==============================================================================
 
@@ -39,82 +44,6 @@ then
 	sleep 5s
 	exit 1
 fi
-
-# ------------------------------------------------------------------------------
-# Function: delOldFile
-#   Remove passed filename (all files matching passed pattern) if it exists
-#   AND it is OLDER than $COMPFILE (also can recursively remove a directory)
-#
-#   Parameter 1: item pattern (for directory removal, have last character a "/")
-#
-#       NOTE: wrap passed filename in double quotes so that wildcards NOT expanded
-#       or else every filename match will be a different parameter: we want file
-#       pattern to be just one parameter passed to delOldFile function
-#
-#   Parameter 2: Comparison File (use touch -d "YYYY-MM-DD" to set the
-#       modified date of this comparison file before passing to delOldFile.) 
-#
-#   Parameter 3: IGNORE Symlink OPTIONAL: if "YES", then will NOT delete
-#       old file/folder IF it is a symlink
-# ------------------------------------------------------------------------------
-delOldFile () {
-    # If last character is a "/", we are dealing with a diretory, and need to
-    #   do "ls -d" instead of normal ls to list.
-    LAST_CHAR=$(echo -n "$1" | tail -c1)
-    # IFS command: Need to change delimiter in list to 'newline' instead of space.
-    #   this way, for loop won't split apart if filename has a space
-    #   warning, if use just sh instead of bash, need to have a literal newline
-    OLDIFS=$IFS
-    IFS=$'\n'
-    # not sure why, but any spaces in $1 not a problem here ("Make PDF Booklet")
-    #   If attempt to do "$1" (with quotes) then wildcard not expanded so don't
-    #   want that.  So, keeping as is even though seems odd not needed.
-    if [ "$LAST_CHAR" == "/" ];
-    then
-        #Directory pattern
-        DEL_LIST=$(ls -d $1 2>/dev/null || true;)
-    else
-        #File pattern
-        DEL_LIST=$(ls $1 2>/dev/null || true;)
-    fi
-    # if $DEL_LIST is empty (from above command), won't process
-    if [ -n "$DEL_LIST" ];
-    then
-        # System Install Date taken from modified date of installer/version file
-        INSTALL_DATE=$(date +%Y-%m-%d --reference=/var/log/installer/version)
-        
-        for DEL_FILE in $DEL_LIST; do
-            
-            DEL_FILE_DATE=$(date +%Y-%m-%d --reference="$DEL_FILE")
-            
-            if [ $3 == "YES" ] && [ -h "$DEL_FILE" ];
-            then
-                # don't process on this file - is a symlink
-                echo
-                echo "*** NOT Removing symlink: " $DEL_FILE
-                echo
-            else
-                # Delete IF DEL_FILE older than Passed reference date OR
-                #   if the date of DEL_FILE is the same as the system install date
-                if [ "$DEL_FILE" -ot $2 ] || [ $DEL_FILE_DATE = $INSTALL_DATE ];
-                then
-                    echo
-                    echo "*** Removing OLD item: " $DEL_FILE
-                    echo
-                    rm -r "$DEL_FILE"
-                else
-                    echo
-                    echo "*** NOT Removing item (newer than legacy date): " $DEL_FILE
-                    echo
-                fi
-            fi
-        done
-    fi
-
-    # Return IFS to prior setting
-    IFS=$OLDIFS
-}
-
 
 # ------------------------------------------------------------------------------
 # Initial Setup
@@ -136,7 +65,7 @@ echo
 ln -sf $DIR/ssg-kmfl-setup.sh /usr/bin/ssg-kmfl-setup
 
 # ------------------------------------------------------------------------------
-# Add LibreOffice 5.0 PPA
+# Add LibreOffice 5.2 PPA
 # ------------------------------------------------------------------------------
 
 # get series, load them up.
@@ -202,24 +131,29 @@ then
     cp $APT_SOURCES $APT_SOURCES.save
 fi
 
-if ! [ -e $APT_SOURCES_D/libreoffice-ubuntu-libreoffice-5-0-$REPO_SERIES.list ];
+if ! [ -e $APT_SOURCES_D/libreoffice-ubuntu-libreoffice-5-2-$REPO_SERIES.list ];
 then
     echo
-    echo "*** Adding LibreOffice 5.0 $REPO_SERIES PPA"
+    echo "*** Adding LibreOffice 5.2 $REPO_SERIES PPA"
     echo
-    echo "deb http://ppa.launchpad.net/libreoffice/libreoffice-5-0/ubuntu $REPO_SERIES main" | \
+    echo "deb http://ppa.launchpad.net/libreoffice/libreoffice-5-2/ubuntu $REPO_SERIES main" | \
         tee $APT_SOURCES_D/libreoffice-ubuntu-libreoffice-5-0-$REPO_SERIES.list
-    echo "# deb-src http://ppa.launchpad.net/libreoffice/libreoffice-5-0/ubuntu $REPO_SERIES main" | \
+    echo "# deb-src http://ppa.launchpad.net/libreoffice/libreoffice-5-2/ubuntu $REPO_SERIES main" | \
         tee -a $APT_SOURCES_D/libreoffice-ubuntu-libreoffice-5-0-$REPO_SERIES.list
 else
-    # found, but ensure Wasta-Linux PPA ACTIVE (user could have accidentally disabled)
+    # found, but ensure LO 5.2 PPA ACTIVE (user could have accidentally disabled)
     echo
-    echo "*** LibreOffice 5.0 $REPO_SERIES PPA already exists, ensuring active"
+    echo "*** LibreOffice 5.2 $REPO_SERIES PPA already exists, ensuring active"
     echo
-    sed -i -e '$a deb http://ppa.launchpad.net/libreoffice/libreoffice-5-0/ubuntu '$REPO_SERIES' main' \
-        -i -e '\@deb http://ppa.launchpad.net/libreoffice/libreoffice-5-0/ubuntu '$REPO_SERIES' main@d' \
+    sed -i -e '$a deb http://ppa.launchpad.net/libreoffice/libreoffice-5-2/ubuntu '$REPO_SERIES' main' \
+        -i -e '\@deb http://ppa.launchpad.net/libreoffice/libreoffice-5-2/ubuntu '$REPO_SERIES' main@d' \
         $APT_SOURCES_D/libreoffice-ubuntu-libreoffice-5-0-$REPO_SERIES.list
 fi
+
+# remove 5.0, 4.4 PPAs if exist
+rm -f $APT_SOURCES_D/libreoffice-libreoffice-5-0*
+rm -f $APT_SOURCES_D/libreoffice-libreoffice-5-1*
+rm -f $APT_SOURCES_D/libreoffice-libreoffice-4-4* # could be leftover from precise settings run on xenial
 
 # ------------------------------------------------------------------------------
 # LibreOffice Preferences Extension install (for all users)
@@ -284,23 +218,107 @@ do
     fi
 done
 
-# For ALL users, delete LO config folder if older than specified date
-#   (this will ensure that ODF file extensions used by system extension above)
-#   since will be re-created when LO launched.  Effectively we are resetting
-#   LO preferences.
+# ------------------------------------------------------------------------------
+# ibus: load up "standard" keyboards for users
+# This assumes ibus 1.5+ (so doesn't work for precise)
+# ------------------------------------------------------------------------------
+LOCAL_USERS=""
+for USER_FOLDER in $(ls -1 home)
+do
+    # if user is in /etc/passwd then it is a 'real user' as opposed to
+    # something like wasta-remastersys
+    if [ "$(grep $USER_FOLDER /etc/passwd)" ];
+    then
+        LOCAL_USERS+="$USER_FOLDER "
+    fi
+done
 
-# Create file with modified date of desired comparison time
-#   so that don't remove a user's updated files if they have made a
-#   custom update to them.
+for CURRENT_USER in $LOCAL_USERS;
+do
+    # not sure why these are owned by root sometimes but shouldn't be
+    chown -R $CURRENT_USER:$CURRENT_USER /home/$CURRENT_USER/.config/ibus
+    chown -R $CURRENT_USER:$CURRENT_USER /home/$CURRENT_USER/.cache/dconf
 
-# 2017-02-09 rik: is this needed?  I thought the shared extensions would be added without resetting prefs???
-COMPFILE=$(mktemp)
-touch $COMPFILE -d '2015-01-26'
+    # need to know if need to start dbus for user
+    # don't use dbus-run-session for logged in user or it doesn't work
+    LOGGED_IN_USER="${SUDO_USER:-$USER}"
+    if [[ "$LOGGED_IN_USER" == "$CURRENT_USER" ]];
+    then
+        #echo "login is same as current: $CURRENT_USER"
+        DBUS_SESSION=""
+    else
+        #echo "user not logged in, running update with dbus: $CURRENT_USER"
+        DBUS_SESSION="dbus-run-session --"
+    fi
 
-delOldFile "/home/*/.config/libreoffice/" $COMPFILE "YES"
+    IBUS_ENGINES=$(su -l "$CURRENT_USER" -c "$DBUS_SESSION gsettings get org.freedesktop.ibus.general preload-engines")
+    ENGINES_ORDER=$(su -l "$CURRENT_USER" -c "$DBUS_SESSION gsettings get org.freedesktop.ibus.general engines-order")
 
-# remove comparison time file
-rm $COMPFILE
+    # remove legacy engine names
+    # (, \)\{0,1\} removes any OPTIONAL ", " preceding the kmfl keyboard name
+    #IBUS_ENGINES=$(sed -e "s@\(, \)\{0,1\}'/usr/share/kmfl/SILEthiopic-1.3.kmn'@@" <<<"$IBUS_ENGINES")
+    #IBUS_ENGINES=$(sed -e "s@\(, \)\{0,1\}'/usr/share/kmfl/sil-el-ethiopian-latin.kmn'@@" <<<"$IBUS_ENGINES")
+    #IBUS_ENGINES=$(sed -e "s@\(, \)\{0,1\}'/usr/share/kmfl/EL.kmn'@@" <<<"$IBUS_ENGINES")
+    #IBUS_ENGINES=$(sed -e "s@\(, \)\{0,1\}'/usr/share/kmfl/sil-pwrgeez.kmn'@@" <<<"$IBUS_ENGINES")
+
+    if [[ "$IBUS_ENGINES" == *"[]"* ]];
+    then
+        echo
+        echo "!!!NO ibus preload-engines found for user: $CURRENT_USER"
+        echo
+        # no engines currently: shouldn't normally happen so add en US as a fallback base
+        IBUS_ENGINES="['xkb:us::eng']"
+    fi
+
+    AR_INSTALLED=$(grep "xkb:ara::ara" <<<"$IBUS_ENGINES")
+    if [[ -z "$AR_INSTALLED" ]];
+    then
+        echo
+        echo "Installing Arabic keyboard for user: $CURRENT_USER"
+        echo
+        # append engine to list
+        IBUS_ENGINES=$(sed -e "s@']@', 'xkb:ara::ara']@" <<<"$IBUS_ENGINES")
+    fi
+
+    GE_INSTALLED=$(grep GE.kmn <<<"$IBUS_ENGINES")
+    if [[ -z "$GE_INSTALLED" ]];
+    then
+        echo
+        echo "Installing GE keyboard for user: $CURRENT_USER"
+        echo
+        # append engine to list
+        IBUS_ENGINES=$(sed -e "s@']@', '/usr/share/kmfl/GE.kmn']@" <<<"$IBUS_ENGINES")
+    fi
+
+    # set engines
+    su -l "$CURRENT_USER" -c "$DBUS_SESSION gsettings set org.freedesktop.ibus.general preload-engines \"$IBUS_ENGINES\"" >/dev/null 2>&1
+
+    # restart ibus
+    su -l "$CURRENT_USER" -c "$DBUS_SESSION ibus restart" >/dev/null 2>&1
+done 
+
+# ------------------------------------------------------------------------------
+# goldendict add wasta-custom-ssg path for dictionaries (all users)
+# ------------------------------------------------------------------------------
+echo
+echo "*** Ensuring Arabic <==> English GoldenDict Dictionaries Installed (for all users)"
+echo
+# touch files first to make sure exist
+touch /home/*/.goldendict/config
+touch /etc/skel/.goldendict/config
+
+# FIRST delete existing element
+# rik: can't get hte xmlstarlet to delete only the right path, so just using sed
+#xmlstarlet ed --inplace --delete 'config/paths/path[path="/usr/share/wasta-custom-ssg/resources/goldendict"]'     /home/*/.goldendict/config
+sed -i -e '\@usr/share/wasta-custom-ssg/resources/goldendict@d' \
+    /home/*/.goldendict/config /etc/skel/.goldendict/config
+
+# create it with element name pathTMP, then can apply attr and then rename to path
+xmlstarlet ed --inplace -s 'config/paths' -t elem -n 'pathTMP' \
+        -v '/usr/share/wasta-custom-ssg/resources/goldendict' \
+    -s 'config/paths/pathTMP' -t attr -n 'recursive' -v '0' \
+    -r 'config/paths/pathTMP' -v path \
+    /home/*/.goldendict/config /etc/skel/.goldendict/config
 
 # ------------------------------------------------------------------------------
 # Set system-wide Paper Size
