@@ -29,6 +29,9 @@
 #       this shouldn't be needed by using extensions?
 #   2017-03-30 rik: add wasta-custom-ssg/resources/goldendict to goldendict
 #       dictionary paths (for all users)
+#   2018-03-20 rik: adjusting goldendict updates to be run for each user.
+#       - Correcting LO extension installs.
+#       - adding LO 5.4 PPA for xenial
 #
 # ==============================================================================
 
@@ -131,32 +134,39 @@ then
     cp $APT_SOURCES $APT_SOURCES.save
 fi
 
-if ! [ -e $APT_SOURCES_D/libreoffice-ubuntu-libreoffice-5-2-$REPO_SERIES.list ];
+# Only have LO 5.4 for xenial
+if [ "$REPO_SERIES" == "xenial" ];
 then
-    echo
-    echo "*** Adding LibreOffice 5.2 $REPO_SERIES PPA"
-    echo
-    echo "deb http://ppa.launchpad.net/libreoffice/libreoffice-5-2/ubuntu $REPO_SERIES main" | \
-        tee $APT_SOURCES_D/libreoffice-ubuntu-libreoffice-5-0-$REPO_SERIES.list
-    echo "# deb-src http://ppa.launchpad.net/libreoffice/libreoffice-5-2/ubuntu $REPO_SERIES main" | \
-        tee -a $APT_SOURCES_D/libreoffice-ubuntu-libreoffice-5-0-$REPO_SERIES.list
-else
-    # found, but ensure LO 5.2 PPA ACTIVE (user could have accidentally disabled)
-    echo
-    echo "*** LibreOffice 5.2 $REPO_SERIES PPA already exists, ensuring active"
-    echo
-    sed -i -e '$a deb http://ppa.launchpad.net/libreoffice/libreoffice-5-2/ubuntu '$REPO_SERIES' main' \
-        -i -e '\@deb http://ppa.launchpad.net/libreoffice/libreoffice-5-2/ubuntu '$REPO_SERIES' main@d' \
-        $APT_SOURCES_D/libreoffice-ubuntu-libreoffice-5-0-$REPO_SERIES.list
+    if ! [ -e $APT_SOURCES_D/libreoffice-ubuntu-libreoffice-5-4-$REPO_SERIES.list ];
+    then
+        echo
+        echo "*** Adding LibreOffice 5.4 $REPO_SERIES PPA"
+        echo
+        echo "deb http://ppa.launchpad.net/libreoffice/libreoffice-5-4/ubuntu $REPO_SERIES main" | \
+            tee $APT_SOURCES_D/libreoffice-ubuntu-libreoffice-5-4-$REPO_SERIES.list
+        echo "# deb-src http://ppa.launchpad.net/libreoffice/libreoffice-5-4/ubuntu $REPO_SERIES main" | \
+            tee -a $APT_SOURCES_D/libreoffice-ubuntu-libreoffice-5-4-$REPO_SERIES.list
+    else
+        # found, but ensure LO 5.4 PPA ACTIVE (user could have accidentally disabled)
+        echo
+        echo "*** LibreOffice 5.4 $REPO_SERIES PPA already exists, ensuring active"
+        echo
+        sed -i -e '$a deb http://ppa.launchpad.net/libreoffice/libreoffice-5-4/ubuntu '$REPO_SERIES' main' \
+            -i -e '\@deb http://ppa.launchpad.net/libreoffice/libreoffice-5-4/ubuntu '$REPO_SERIES' main@d' \
+            $APT_SOURCES_D/libreoffice-ubuntu-libreoffice-5-4-$REPO_SERIES.list
+    fi
+    rm -f $APT_SOURCES_D/libreoffice-libreoffice-5-2*
 fi
 
-# remove 5.0, 4.4 PPAs if exist
+# remove older LO PPAs if exist
 rm -f $APT_SOURCES_D/libreoffice-libreoffice-5-0*
 rm -f $APT_SOURCES_D/libreoffice-libreoffice-5-1*
 rm -f $APT_SOURCES_D/libreoffice-libreoffice-4-4* # could be leftover from precise settings run on xenial
 
 # ------------------------------------------------------------------------------
 # LibreOffice Preferences Extension install (for all users)
+# LEGACY: now install extensions through install-files/extensions so am removing
+#   ones installed previously using unopkg
 # ------------------------------------------------------------------------------
 
 # REMOVE "Disable VBA Refactoring" extension: only way to update is
@@ -168,12 +178,6 @@ then
     unopkg remove --shared disable-vba-refactoring.oxt
 fi
 
-# Install disable-vba-refactoring.oxt
-echo
-echo "*** Installing/Upating Disable VBA Refactoring LO Extension"
-echo
-unopkg add --shared $DIR/disable-vba-refactoring.oxt
-
 # REMOVE "Disable VBA Refactoring" extension: only way to update is
 #   remove then reinstall
 EXT_FOUND=$(ls /var/spool/libreoffice/uno_packages/cache/uno_packages/*/wasta-ssg-odf-defaults* 2> /dev/null)
@@ -182,12 +186,6 @@ if [ "$EXT_FOUND" ];
 then
     unopkg remove --shared wasta-ssg-odf-defaults.oxt
 fi
-
-# Install wasta-ssg-defaults.oxt (Default LibreOffice Preferences)
-echo
-echo "*** Installing SSG LO ODF Default Settings Extension (for all users)"
-echo
-unopkg add --shared $DIR/wasta-ssg-odf-defaults.oxt
 
 # REMOVE "Non-ODF" extension: default for SSG is now ODF
 # Send error to null so won't display
@@ -219,8 +217,7 @@ do
 done
 
 # ------------------------------------------------------------------------------
-# ibus: load up "standard" keyboards for users
-# This assumes ibus 1.5+ (so doesn't work for precise)
+# Per User Adjustments
 # ------------------------------------------------------------------------------
 LOCAL_USERS=""
 for USER_FOLDER in $(ls -1 home)
@@ -235,90 +232,100 @@ done
 
 for CURRENT_USER in $LOCAL_USERS;
 do
-    # not sure why these are owned by root sometimes but shouldn't be
-    chown -R $CURRENT_USER:$CURRENT_USER /home/$CURRENT_USER/.config/ibus
-    chown -R $CURRENT_USER:$CURRENT_USER /home/$CURRENT_USER/.cache/dconf
-
-    # need to know if need to start dbus for user
-    # don't use dbus-run-session for logged in user or it doesn't work
-    LOGGED_IN_USER="${SUDO_USER:-$USER}"
-    if [[ "$LOGGED_IN_USER" == "$CURRENT_USER" ]];
+    # --------------------------------------------------------------------------
+    # ibus: load up "standard" keyboards for users
+    # This assumes ibus 1.5+ (so doesn't work for precise)
+    # --------------------------------------------------------------------------
+    if [ "$REPO_SERIES" != "precise" ];
     then
-        #echo "login is same as current: $CURRENT_USER"
-        DBUS_SESSION=""
-    else
-        #echo "user not logged in, running update with dbus: $CURRENT_USER"
-        DBUS_SESSION="dbus-run-session --"
+        # not sure why these are owned by root sometimes but shouldn't be
+        chown -R $CURRENT_USER:$CURRENT_USER /home/$CURRENT_USER/.config/ibus
+        chown -R $CURRENT_USER:$CURRENT_USER /home/$CURRENT_USER/.cache/dconf
+
+        # need to know if need to start dbus for user
+        # don't use dbus-run-session for logged in user or it doesn't work
+        LOGGED_IN_USER="${SUDO_USER:-$USER}"
+        if [[ "$LOGGED_IN_USER" == "$CURRENT_USER" ]];
+        then
+            #echo "login is same as current: $CURRENT_USER"
+            DBUS_SESSION=""
+        else
+            #echo "user not logged in, running update with dbus: $CURRENT_USER"
+            DBUS_SESSION="dbus-run-session --"
+        fi
+
+        IBUS_ENGINES=$(su -l "$CURRENT_USER" -c "$DBUS_SESSION gsettings get org.freedesktop.ibus.general preload-engines")
+        ENGINES_ORDER=$(su -l "$CURRENT_USER" -c "$DBUS_SESSION gsettings get org.freedesktop.ibus.general engines-order")
+
+        # remove legacy engine names
+        # (, \)\{0,1\} removes any OPTIONAL ", " preceding the kmfl keyboard name
+        #IBUS_ENGINES=$(sed -e "s@\(, \)\{0,1\}'/usr/share/kmfl/SILEthiopic-1.3.kmn'@@" <<<"$IBUS_ENGINES")
+        #IBUS_ENGINES=$(sed -e "s@\(, \)\{0,1\}'/usr/share/kmfl/sil-el-ethiopian-latin.kmn'@@" <<<"$IBUS_ENGINES")
+        #IBUS_ENGINES=$(sed -e "s@\(, \)\{0,1\}'/usr/share/kmfl/EL.kmn'@@" <<<"$IBUS_ENGINES")
+        #IBUS_ENGINES=$(sed -e "s@\(, \)\{0,1\}'/usr/share/kmfl/sil-pwrgeez.kmn'@@" <<<"$IBUS_ENGINES")
+
+        if [[ "$IBUS_ENGINES" == *"[]"* ]];
+        then
+            echo
+            echo "!!!NO ibus preload-engines found for user: $CURRENT_USER"
+            echo
+            # no engines currently: shouldn't normally happen so add en US as a fallback base
+            IBUS_ENGINES="['xkb:us::eng']"
+        fi
+
+        AR_INSTALLED=$(grep "xkb:ara::ara" <<<"$IBUS_ENGINES")
+        if [[ -z "$AR_INSTALLED" ]];
+        then
+            echo
+            echo "Installing Arabic keyboard for user: $CURRENT_USER"
+            echo
+            # append engine to list
+            IBUS_ENGINES=$(sed -e "s@']@', 'xkb:ara::ara']@" <<<"$IBUS_ENGINES")
+        fi
+
+        GE_INSTALLED=$(grep GE.kmn <<<"$IBUS_ENGINES")
+        if [[ -z "$GE_INSTALLED" ]];
+        then
+            echo
+            echo "Installing GE keyboard for user: $CURRENT_USER"
+            echo
+            # append engine to list
+            IBUS_ENGINES=$(sed -e "s@']@', '/usr/share/kmfl/GE.kmn']@" <<<"$IBUS_ENGINES")
+        fi
+
+        # set engines
+        su -l "$CURRENT_USER" -c "$DBUS_SESSION gsettings set org.freedesktop.ibus.general preload-engines \"$IBUS_ENGINES\"" >/dev/null 2>&1
+
+        # restart ibus
+        su -l "$CURRENT_USER" -c "$DBUS_SESSION ibus restart" >/dev/null 2>&1
     fi
 
-    IBUS_ENGINES=$(su -l "$CURRENT_USER" -c "$DBUS_SESSION gsettings get org.freedesktop.ibus.general preload-engines")
-    ENGINES_ORDER=$(su -l "$CURRENT_USER" -c "$DBUS_SESSION gsettings get org.freedesktop.ibus.general engines-order")
+    # --------------------------------------------------------------------------
+    # goldendict add wasta-custom-ssg path for dictionaries (all users)
+    # --------------------------------------------------------------------------
+    echo
+    echo "*** Ensuring Arabic <==> English GoldenDict Dictionaries Installed (for all users)"
+    echo
+    # touch files first to make sure exist
+    touch /home/$CURRENT_USER/.goldendict/config
+    touch /etc/skel/.goldendict/config
 
-    # remove legacy engine names
-    # (, \)\{0,1\} removes any OPTIONAL ", " preceding the kmfl keyboard name
-    #IBUS_ENGINES=$(sed -e "s@\(, \)\{0,1\}'/usr/share/kmfl/SILEthiopic-1.3.kmn'@@" <<<"$IBUS_ENGINES")
-    #IBUS_ENGINES=$(sed -e "s@\(, \)\{0,1\}'/usr/share/kmfl/sil-el-ethiopian-latin.kmn'@@" <<<"$IBUS_ENGINES")
-    #IBUS_ENGINES=$(sed -e "s@\(, \)\{0,1\}'/usr/share/kmfl/EL.kmn'@@" <<<"$IBUS_ENGINES")
-    #IBUS_ENGINES=$(sed -e "s@\(, \)\{0,1\}'/usr/share/kmfl/sil-pwrgeez.kmn'@@" <<<"$IBUS_ENGINES")
+    # ensure user file owned by user
+    chown $CURRENT_USER:$CURRENT_USER /home/$CURRENT_USER/.goldendict/config
 
-    if [[ "$IBUS_ENGINES" == *"[]"* ]];
-    then
-        echo
-        echo "!!!NO ibus preload-engines found for user: $CURRENT_USER"
-        echo
-        # no engines currently: shouldn't normally happen so add en US as a fallback base
-        IBUS_ENGINES="['xkb:us::eng']"
-    fi
+    # FIRST delete existing element
+    # rik: can't get xmlstarlet to delete only the right path, so just using sed
+    #xmlstarlet ed --inplace --delete 'config/paths/path[path="/usr/share/wasta-custom-ssg/resources/   goldendict"]'     /home/*/.goldendict/config
+    su -l "$CURRENT_USER" -c "sed -i -e '\@usr/share/wasta-custom-ssg/resources/goldendict@d' /home/$CURRENT_USER/.goldendict/config /etc/skel/.goldendict/config"
 
-    AR_INSTALLED=$(grep "xkb:ara::ara" <<<"$IBUS_ENGINES")
-    if [[ -z "$AR_INSTALLED" ]];
-    then
-        echo
-        echo "Installing Arabic keyboard for user: $CURRENT_USER"
-        echo
-        # append engine to list
-        IBUS_ENGINES=$(sed -e "s@']@', 'xkb:ara::ara']@" <<<"$IBUS_ENGINES")
-    fi
-
-    GE_INSTALLED=$(grep GE.kmn <<<"$IBUS_ENGINES")
-    if [[ -z "$GE_INSTALLED" ]];
-    then
-        echo
-        echo "Installing GE keyboard for user: $CURRENT_USER"
-        echo
-        # append engine to list
-        IBUS_ENGINES=$(sed -e "s@']@', '/usr/share/kmfl/GE.kmn']@" <<<"$IBUS_ENGINES")
-    fi
-
-    # set engines
-    su -l "$CURRENT_USER" -c "$DBUS_SESSION gsettings set org.freedesktop.ibus.general preload-engines \"$IBUS_ENGINES\"" >/dev/null 2>&1
-
-    # restart ibus
-    su -l "$CURRENT_USER" -c "$DBUS_SESSION ibus restart" >/dev/null 2>&1
-done 
-
-# ------------------------------------------------------------------------------
-# goldendict add wasta-custom-ssg path for dictionaries (all users)
-# ------------------------------------------------------------------------------
-echo
-echo "*** Ensuring Arabic <==> English GoldenDict Dictionaries Installed (for all users)"
-echo
-# touch files first to make sure exist
-touch /home/*/.goldendict/config
-touch /etc/skel/.goldendict/config
-
-# FIRST delete existing element
-# rik: can't get hte xmlstarlet to delete only the right path, so just using sed
-#xmlstarlet ed --inplace --delete 'config/paths/path[path="/usr/share/wasta-custom-ssg/resources/goldendict"]'     /home/*/.goldendict/config
-sed -i -e '\@usr/share/wasta-custom-ssg/resources/goldendict@d' \
-    /home/*/.goldendict/config /etc/skel/.goldendict/config
-
-# create it with element name pathTMP, then can apply attr and then rename to path
-xmlstarlet ed --inplace -s 'config/paths' -t elem -n 'pathTMP' \
+    # create it with element name pathTMP, then can apply attr and then rename to path
+    su -l "$CURRENT_USER" -c "xmlstarlet ed --inplace -s 'config/paths' -t elem -n 'pathTMP' \
         -v '/usr/share/wasta-custom-ssg/resources/goldendict' \
-    -s 'config/paths/pathTMP' -t attr -n 'recursive' -v '0' \
-    -r 'config/paths/pathTMP' -v path \
-    /home/*/.goldendict/config /etc/skel/.goldendict/config
+        -s 'config/paths/pathTMP' -t attr -n 'recursive' -v '0' \
+        -r 'config/paths/pathTMP' -v path \
+        /home/$CURRENT_USER/.goldendict/config /etc/skel/.goldendict/config"
+
+done
 
 # ------------------------------------------------------------------------------
 # Set system-wide Paper Size

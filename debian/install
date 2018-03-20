@@ -1,2 +1,3 @@
-install-files/kmfl                            usr/share
-wasta-custom-ssg                              usr/share
+install-files/extensions         usr/lib/libreoffice/share
+install-files/kmfl               usr/share
+wasta-custom-ssg                 usr/share

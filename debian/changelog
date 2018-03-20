@@ -1,3 +1,12 @@
+wasta-custom-ssg (1.10.0) xenial; urgency=medium
+
+  * postinst: Add LO 5.4 PPA for xenial
+    - Run goldendict setup for each user
+    - Remove LO extension additions
+  * install-files/extensions: add LO extensions
+
+ -- Rik Shaw <rikshaw76@gmail.com>  Tue, 20 Mar 2018 09:42:29 +0300
+
 wasta-custom-ssg (1.9.1) xenial; urgency=medium
 
   * postinst: add wasta-custom-ssg path to goldendict dictionary paths

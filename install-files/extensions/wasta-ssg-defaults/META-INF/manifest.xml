@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--                                                                         -->
+<!-- ssg-defaults - manifest.xml                                             -->
+<!--                                                                         -->
+<!-- 2014-02-04 rik: initial code                                            -->
+<!--                                                                         -->
+<!DOCTYPE manifest:manifest PUBLIC "-//OpenOffice.org//DTD Manifest 1.0//EN" "Manifest.dtd">
+<manifest:manifest xmlns:manifest="http://openoffice.org/2001/manifest">
+    <manifest:file-entry manifest:media-type="application/vnd.sun.star.configuration-data" 
+                          manifest:full-path="calc.xcu"/>
+    <manifest:file-entry manifest:media-type="application/vnd.sun.star.configuration-data" 
+                          manifest:full-path="common.xcu"/>
+    <manifest:file-entry manifest:media-type="application/vnd.sun.star.configuration-data" 
+                          manifest:full-path="linguistic.xcu"/>
+    <manifest:file-entry manifest:media-type="application/vnd.sun.star.configuration-data" 
+                          manifest:full-path="setup.xcu"/>
+    <manifest:file-entry manifest:media-type="application/vnd.sun.star.configuration-data" 
+                          manifest:full-path="writer.xcu"/>
+    <manifest:file-entry manifest:media-type="application/vnd.sun.star.configuration-data" 
+                          manifest:full-path="dataAccess.xcu"/>
+    <manifest:file-entry manifest:media-type="application/vnd.sun.star.configuration-data" 
+                          manifest:full-path="jobs.xcu"/>
+</manifest:manifest>
