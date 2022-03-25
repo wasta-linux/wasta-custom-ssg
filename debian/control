@@ -7,7 +7,7 @@ Standards-Version: 3.9.5
 
 Package: wasta-custom-ssg
 Architecture: all
-Depends: xmlstarlet, ${shlibs:Depends}, ${misc:Depends}
+Depends: xmlstarlet, ${misc:Depends}
 Recommends: goldendict, ibus-kmfl, kmfl-keyboard-ipa, wasta-resources-ssg
 Description: Wasta-Linux SSG customization
  Sets up machine for Wasta-Linux SSG use.

@@ -1,3 +1,10 @@
+wasta-custom-ssg (2.0.0) focal; urgency=medium
+
+  * initial update for focal: add gschema override for ibus
+    defaults, other items from wasta-custom-eth
+
+ -- Rik Shaw <rikshaw76@gmail.com>  Fri, 25 Mar 2022 14:09:39 -0500
+
 wasta-custom-ssg (1.10.0) xenial; urgency=medium
 
   * postinst: Add LO 5.4 PPA for xenial
